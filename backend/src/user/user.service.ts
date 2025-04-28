@@ -19,4 +19,8 @@ export class UserService {
     const user = this.userRepository.create(userData);
     return this.userRepository.save(user);
   }
+
+  async confirmUser(id: number): Promise<void> {
+    await this.userRepository.update(id, { isConfirmed: true });
+  }
 }

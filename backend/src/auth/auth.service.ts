@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { MailerService } from '../mailer/mailer.service';
@@ -15,6 +15,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
+    console.log('bcrypt:', bcrypt);
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
     const user = await this.userService.create({
@@ -25,11 +26,12 @@ export class AuthService {
       domaine: registerDto.domaine,
     });
 
-    return { message: 'Utilisateur créé avec succès', user };
     const payload = { id: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
 
     await this.mailerService.sendUserConfirmation(user.email, token);
+
+    return { message: 'Utilisateur créé avec succès', user };
   }
 
   async login(loginDto: LoginDto) {
@@ -47,5 +49,17 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     return { token };
+  }
+
+  async confirmAccount(token: string) {
+    try {
+      const payload = this.jwtService.verify<{ id: string }>(token);
+
+      await this.userService.confirmUser(Number(payload.id));
+
+      return { message: 'Votre compte a été confirmé avec succès !' };
+    } catch {
+      throw new UnauthorizedException('Token invalide ou expiré');
+    }
   }
 }

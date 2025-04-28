@@ -1,9 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -24,6 +19,9 @@ export class User {
 
   @Column()
   domaine: string;
+
+  @Column({ default: false }) // ✅ Ajoute ce champ !
+  isConfirmed: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

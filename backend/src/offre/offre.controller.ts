@@ -15,18 +15,21 @@ export class OffreController {
     @Req() req: Request & { user?: CustomJwtPayload },
   ) {
     const userPayload = req.user;
-    if (!userPayload) {
-      throw new Error('Utilisateur non authentifié');
-    }
-
+    if (!userPayload) throw new Error('Utilisateur non authentifié');
     const auteur = new User();
     auteur.id = userPayload.id;
-
     return this.offreService.create(createOffreDto, auteur);
   }
 
   @Get()
   async findAll() {
-    return this.offreService.findAll();
+    return await this.offreService.findAll();
+  }
+
+  @Get('/my')
+  async findMyOffers(@Req() req: Request & { user?: CustomJwtPayload }) {
+    const userPayload = req.user;
+    if (!userPayload) throw new Error('Utilisateur non authentifié');
+    return this.offreService.findByUser(userPayload.id);
   }
 }

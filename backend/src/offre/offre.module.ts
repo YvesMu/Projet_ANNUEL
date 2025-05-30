@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Offre } from './offre.entity';
 import { User } from '../user/user.entity';
@@ -19,6 +19,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 })
 export class OffreModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(IsProfessionalMiddleware).forRoutes('offres');
+    consumer
+      .apply(IsProfessionalMiddleware)
+      .forRoutes(
+        { path: 'offres', method: RequestMethod.POST },
+        { path: 'offres/my', method: RequestMethod.GET },
+      );
   }
 }

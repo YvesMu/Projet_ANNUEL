@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
 import { typeOrmConfig } from './typeorm.config';
+import { OffreModule } from './offre/offre.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { typeOrmConfig } from './typeorm.config';
     UserModule,
     AuthModule,
     MailerModule,
+    OffreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

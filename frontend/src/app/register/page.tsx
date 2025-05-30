@@ -9,12 +9,12 @@ export default function Register() {
     nom: "",
     email: "",
     password: "",
-    role: "particulier",
+    role: "particulier", // soit particulier, soit professionnel
     typeOffre: "emploi",
     domaine: "informatique",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -71,7 +71,22 @@ export default function Register() {
             onChange={handleChange}
             className="border p-2 rounded"
           />
-          <button type="submit" className="bg-green-600 text-white p-2 rounded hover:bg-green-700">
+
+          {/* Nouveau select pour choisir le rôle */}
+          <select
+            name="role"
+            value={form.role}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="particulier">Particulier</option>
+            <option value="professionnel">Professionnel</option>
+          </select>
+
+          <button
+            type="submit"
+            className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
+          >
             S&apos;inscrire
           </button>
         </form>

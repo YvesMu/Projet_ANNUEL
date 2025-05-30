@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 
 @Entity()
@@ -24,9 +24,27 @@ export class Offre {
   @Column()
   salaire: string;
 
-  @ManyToOne(() => User, (user) => user.id)
-  auteur: User;
+  @Column({ nullable: true })
+  experience: string;
+
+  @Column({ nullable: true })
+  niveauEtude: string;
+
+  @Column({ nullable: true })
+  horaires: string;
+
+  @Column('simple-array', { nullable: true })
+  avantages: string[];
+
+  @Column('simple-array', { nullable: true })
+  competences: string[];
+
+  @Column({ nullable: true })
+  dateDebut: string;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @ManyToOne(() => User, (user) => user.offres)
+  user: User;
 }

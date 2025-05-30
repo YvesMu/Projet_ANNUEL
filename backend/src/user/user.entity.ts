@@ -33,6 +33,6 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(() => Offre, (offre) => offre.user)
+  @OneToMany(() => Offre, (offre) => offre.auteur)
   offres: Offre[];
 }

@@ -45,6 +45,7 @@ export class Offre {
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.offres)
-  user: User;
+  // ✅ Une seule relation vers User
+  @ManyToOne(() => User, (user) => user.offres, { eager: true })
+  auteur: User;
 }

@@ -5,6 +5,12 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true })
+  prenom: string;
+
+  @Column({ nullable: true })
+  nom: string;
+
   @Column({ unique: true })
   email: string;
 
@@ -20,7 +26,7 @@ export class User {
   @Column()
   domaine: string;
 
-  @Column({ default: false }) // ✅ Ajoute ce champ !
+  @Column({ default: false })
   isConfirmed: boolean;
 
   @CreateDateColumn()

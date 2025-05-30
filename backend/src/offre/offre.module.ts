@@ -13,6 +13,6 @@ import { User } from '../user/user.entity';
 })
 export class OffreModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(IsProfessionalMiddleware).forRoutes('offres'); // Ce middleware s'applique sur toutes les routes /offres
+    consumer.apply(IsProfessionalMiddleware).forRoutes(OffreController);
   }
 }

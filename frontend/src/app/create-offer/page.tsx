@@ -1,13 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
+
+type OffreForm = {
+  titre: string;
+  description: string;
+  domaine: string;
+  typeContrat: string;
+  lieu: string;
+  salaire: string;
+};
 
 export default function CreateOffer() {
   const router = useRouter();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<OffreForm>({
     titre: "",
     description: "",
     domaine: "",
@@ -15,6 +24,13 @@ export default function CreateOffer() {
     lieu: "",
     salaire: "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,10 +49,16 @@ export default function CreateOffer() {
         body: JSON.stringify(form),
       });
 
+      if (!response.ok) {
+        const errData = await response.json();
+        console.log("Erreur backend :", errData);
+        throw new Error("Erreur serveur");
+      }
+
       if (!response.ok) throw new Error("Erreur serveur");
 
       alert("Offre créée avec succès !");
-      router.push("/"); // Redirection après succès
+      router.push("/");
     } catch (error) {
       console.error("Erreur :", error);
       alert("Erreur lors de la création de l'offre.");
@@ -56,7 +78,7 @@ export default function CreateOffer() {
           <input name="lieu" placeholder="Lieu" value={form.lieu} onChange={handleChange} className="border p-2 rounded" />
           <input name="salaire" placeholder="Salaire" value={form.salaire} onChange={handleChange} className="border p-2 rounded" />
           <button type="submit" className="bg-green-600 text-white p-2 rounded hover:bg-green-700">
-            Publier l&lsquo;offre
+            Publier l&apos;offre
           </button>
         </form>
       </main>

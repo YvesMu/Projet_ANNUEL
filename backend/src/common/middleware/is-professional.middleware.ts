@@ -34,11 +34,13 @@ export class IsProfessionalMiddleware implements NestMiddleware {
 
     try {
       const secret = process.env.JWT_SECRET;
+      console.log('JWT_SECRET:', process.env.JWT_SECRET);
       if (!secret) {
         throw new Error('JWT_SECRET non défini dans .env');
       }
 
       const payload = jwt.verify(token, secret) as CustomJwtPayload;
+      console.log('Payload décodé:', payload);
 
       if (payload.role !== 'professionnel') {
         throw new ForbiddenException('Seuls les professionnels peuvent effectuer cette action');

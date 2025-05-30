@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const [isProfessional, setIsProfessional] = useState(false);
+  const [role, setRole] = useState<"particulier" | "professionnel" | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
@@ -15,9 +15,7 @@ export default function Header() {
       setIsAuthenticated(true);
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        if (payload.role === "professionnel") {
-          setIsProfessional(true);
-        }
+        setRole(payload.role);
       } catch (error) {
         console.error("Erreur de décodage du token", error);
       }
@@ -27,7 +25,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    setIsProfessional(false);
+    setRole(null);
     router.push("/login");
   };
 
@@ -38,6 +36,7 @@ export default function Header() {
       </Link>
       <nav className="flex gap-4">
         <Link href="/" className="hover:underline">Accueil</Link>
+        <Link href="/offres" className="hover:underline">Offres</Link>
 
         {!isAuthenticated && (
           <>
@@ -48,15 +47,19 @@ export default function Header() {
 
         {isAuthenticated && (
           <>
-            <Link href="/dashboard" className="hover:underline">Dashboard</Link>
+            {role === "professionnel" && (
+              <>
+                <Link href="/dashboard-pro" className="hover:underline">Dashboard Pro</Link>
+                <Link href="/create-offer" className="hover:underline font-semibold">Créer une offre</Link>
+              </>
+            )}
+
+            {role === "particulier" && (
+              <Link href="/dashboard" className="hover:underline">Dashboard</Link>
+            )}
+
             <button onClick={handleLogout} className="hover:underline">Déconnexion</button>
           </>
-        )}
-
-        {isProfessional && (
-          <Link href="/create-offer" className="hover:underline font-semibold">
-            Créer une offre
-          </Link>
         )}
       </nav>
     </header>

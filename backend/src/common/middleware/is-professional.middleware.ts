@@ -5,21 +5,26 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
-interface CustomJwtPayload extends JwtPayload {
+interface CustomJwtPayload {
   id: number;
   email: string;
   role: 'particulier' | 'professionnel';
 }
 
-// On étend le type Request pour ajouter notre user proprement
 interface AuthenticatedRequest extends Request {
   user?: CustomJwtPayload;
 }
 
 @Injectable()
 export class IsProfessionalMiddleware implements NestMiddleware {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
   use(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
     const authHeader = req.headers.authorization;
 
@@ -33,23 +38,23 @@ export class IsProfessionalMiddleware implements NestMiddleware {
     }
 
     try {
-      const secret = process.env.JWT_SECRET;
-      console.log('JWT_SECRET:', process.env.JWT_SECRET);
+      const secret = this.configService.get<string>('JWT_SECRET');
       if (!secret) {
         throw new Error('JWT_SECRET non défini dans .env');
       }
 
-      const payload = jwt.verify(token, secret) as CustomJwtPayload;
+      const payload = this.jwtService.verify<CustomJwtPayload>(token, { secret });
+
       console.log('Payload décodé:', payload);
 
       if (payload.role !== 'professionnel') {
         throw new ForbiddenException('Seuls les professionnels peuvent effectuer cette action');
       }
 
-      req.user = payload; // ✅ On utilise maintenant le typage étendu
-
+      req.user = payload;
       next();
-    } catch {
+    } catch (err) {
+      console.log('Erreur lors de la vérification du token :', err);
       throw new UnauthorizedException('Token invalide ou expiré');
     }
   }

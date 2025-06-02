@@ -27,4 +27,32 @@ export class OffreService {
       relations: ['auteur'],
     });
   }
+
+    async delete(id: number, userId: number): Promise<void> {
+    const offre = await this.offreRepository.findOne({
+      where: { id, auteur: { id: userId } },
+      relations: ['auteur'],
+    });
+
+    if (!offre) {
+      throw new Error('Offre introuvable ou non autorisée');
+    }
+
+    await this.offreRepository.remove(offre);
+  }
+
+  async update(id:number, userId: number, updateDto: CreateOffreDto): Promise<Offre> {
+    const offre = await this.offreRepository.findOne({
+      where: { id, auteur: { id: userId } },
+      relations: ['auteur'],
+    });
+
+    if (!offre) {
+      throw new Error('Offre introuvable ou non autorisée');
+    }
+
+    Object.assign(offre, updateDto);
+    return this.offreRepository.save(offre);
+  }
+
 }

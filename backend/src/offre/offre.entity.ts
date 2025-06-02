@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, OneToMany } from 'typeorm';
 import { User } from '../user/user.entity';
+import { Postulation } from '../postulation/postulation.entity';
 
 @Entity()
 export class Offre {
@@ -45,7 +46,9 @@ export class Offre {
   @CreateDateColumn()
   createdAt: Date;
 
-  // ✅ Une seule relation vers User
   @ManyToOne(() => User, (user) => user.offres, { eager: true })
   auteur: User;
+
+  @OneToMany(() => Postulation, (postulation) => postulation.offre)
+  postulations: Postulation[];
 }

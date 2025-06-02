@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
 import { typeOrmConfig } from './typeorm.config';
 import { OffreModule } from './offre/offre.module';
+import { PostulationModule } from './postulation/postulation.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OffreModule } from './offre/offre.module';
     AuthModule,
     MailerModule,
     OffreModule,
+    PostulationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

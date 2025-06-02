@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
 import { Offre } from '../offre/offre.entity';
+import { Postulation } from '../postulation/postulation.entity';
+
 
 @Entity()
 export class User {
@@ -35,4 +37,7 @@ export class User {
 
   @OneToMany(() => Offre, (offre) => offre.auteur)
   offres: Offre[];
+
+  @OneToMany(() => Postulation, (postulation) => postulation.candidat)
+  postulations: Postulation[];
 }

@@ -56,4 +56,8 @@ export class OffreController {
     return await this.offreService.update(id, userPayload.id, updateDto); 
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.offreService.findById(parseInt(id));
+  }
 }

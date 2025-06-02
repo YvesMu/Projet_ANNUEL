@@ -55,4 +55,10 @@ export class OffreService {
     return this.offreRepository.save(offre);
   }
 
+  async findById(id: number): Promise<Offre | null> {
+    return this.offreRepository.findOne({
+      where: { id },
+      relations: ['auteur'],
+    });
+  }
 }

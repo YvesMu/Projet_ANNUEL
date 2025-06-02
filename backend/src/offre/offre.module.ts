@@ -11,7 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Offre, User]),
-    JwtModule.register({}), // <- même si vide car on utilise déjà le JwtService
+    JwtModule.register({}),
     ConfigModule,
   ],
   controllers: [OffreController],
@@ -22,8 +22,7 @@ export class OffreModule implements NestModule {
     consumer
       .apply(IsProfessionalMiddleware)
       .forRoutes(
-        { path: 'offres', method: RequestMethod.POST },
-        { path: 'offres/my', method: RequestMethod.GET },
+        { path: 'offres', method: RequestMethod.POST }
       );
   }
 }

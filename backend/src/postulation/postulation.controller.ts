@@ -1,11 +1,13 @@
-import { Controller, Post, Body, Req, Get } from '@nestjs/common';
+import { Controller, Post, Body, Req, Get, UseGuards } from '@nestjs/common';
 import { PostulationService } from './postulation.service';
 import { CreatePostulationDto } from './dto/create-postulation.dto';
 import { Request } from 'express';
 import { CustomJwtPayload } from '../common/interfaces/custom-jwt-payload.interface';
 import { User } from '../user/user.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('postulations')
+@UseGuards(JwtAuthGuard)
 export class PostulationController {
   constructor(private readonly postulationService: PostulationService) {}
 

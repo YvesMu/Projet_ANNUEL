@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
+import Link from "next/link";
 
 interface Offre {
   id: number;
@@ -23,7 +24,6 @@ export default function OffresPage() {
     fetch("http://localhost:5000/offres")
       .then((res) => res.json())
       .then((data) => {
-        // Ici ton backend renvoie déjà un tableau pur :
         setOffres(data);
         setFiltered(data);
       })
@@ -59,17 +59,19 @@ export default function OffresPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((offre) => (
-            <div key={offre.id} className="border rounded shadow p-4">
-              <h2 className="text-xl font-semibold">{offre.titre}</h2>
-              <p className="mt-2">{offre.description}</p>
-              <p className="mt-1 text-sm text-gray-600">
-                {offre.domaine} | {offre.typeContrat} | {offre.lieu}
-              </p>
-              <p className="mt-1 font-bold text-green-600">{offre.salaire}€</p>
-              <p className="mt-1 text-sm text-gray-500">
-                Publié le : {new Date(offre.createdAt).toLocaleDateString()}
-              </p>
-            </div>
+            <Link key={offre.id} href={`/offres/${offre.id}`}>
+              <div className="border rounded shadow p-4 hover:bg-gray-100 cursor-pointer">
+                <h2 className="text-xl font-semibold">{offre.titre}</h2>
+                <p className="mt-2">{offre.description}</p>
+                <p className="mt-1 text-sm text-gray-600">
+                  {offre.domaine} | {offre.typeContrat} | {offre.lieu}
+                </p>
+                <p className="mt-1 font-bold text-green-600">{offre.salaire}€</p>
+                <p className="mt-1 text-sm text-gray-500">
+                  Publié le : {new Date(offre.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            </Link>
           ))}
         </div>
       </main>

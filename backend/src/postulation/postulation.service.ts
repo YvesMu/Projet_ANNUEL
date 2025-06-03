@@ -10,7 +10,7 @@ import { Offre } from '../offre/offre.entity';
 export class PostulationService {
   constructor(
     @InjectRepository(Postulation) private postulationRepo: Repository<Postulation>,
-    @InjectRepository(Offre) private offreRepo: Repository<Offre>
+    @InjectRepository(Offre) private offreRepo: Repository<Offre>,
   ) {}
 
   async create(dto: CreatePostulationDto, candidat: User): Promise<Postulation> {

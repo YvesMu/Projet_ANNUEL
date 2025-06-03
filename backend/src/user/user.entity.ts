@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } f
 import { Offre } from '../offre/offre.entity';
 import { Postulation } from '../postulation/postulation.entity';
 
-
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()

@@ -90,7 +90,7 @@ export default function DashboardPro() {
         {loading ? (
           <p>Chargement...</p>
         ) : offres.length === 0 ? (
-          <p>Aucune offre publiée pour l'instant.</p>
+          <p>Aucune offre publiée pour l&lsquo;instant.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {offres.map((offre) => (

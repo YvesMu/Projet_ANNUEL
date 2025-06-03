@@ -14,7 +14,7 @@ export class PostulationController {
   @Post()
   async create(
     @Body() dto: CreatePostulationDto,
-    @Req() req: Request & { user?: CustomJwtPayload }
+    @Req() req: Request & { user?: CustomJwtPayload },
   ) {
     const userPayload = req.user;
     if (!userPayload) throw new Error('Utilisateur non authentifié');

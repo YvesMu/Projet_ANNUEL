@@ -8,11 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    JwtModule.register({}), 
-    ConfigModule
-  ],
+  imports: [TypeOrmModule.forFeature([User]), JwtModule.register({}), ConfigModule],
   controllers: [UserController],
   providers: [UserService, JwtAuthGuard],
   exports: [UserService],

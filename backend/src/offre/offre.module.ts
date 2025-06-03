@@ -9,11 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Offre, User]),
-    JwtModule.register({}),
-    ConfigModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Offre, User]), JwtModule.register({}), ConfigModule],
   controllers: [OffreController],
   providers: [OffreService, ConfigService],
 })
@@ -21,8 +17,6 @@ export class OffreModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(IsProfessionalMiddleware)
-      .forRoutes(
-        { path: 'offres', method: RequestMethod.POST }
-      );
+      .forRoutes({ path: 'offres', method: RequestMethod.POST });
   }
 }

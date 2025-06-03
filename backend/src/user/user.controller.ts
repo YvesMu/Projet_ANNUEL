@@ -12,7 +12,7 @@ export class UserController {
   @Put('profile')
   async updateProfile(
     @Body() update: { cvUrl?: string; presentation?: string; photoUrl?: string },
-    @Req() req: Request & { user?: CustomJwtPayload }
+    @Req() req: Request & { user?: CustomJwtPayload },
   ) {
     const userId = req.user?.id;
     if (!userId) {

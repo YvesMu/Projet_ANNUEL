@@ -34,10 +34,7 @@ export class OffreController {
   }
 
   @Delete(':id')
-  async deleteOffre(
-    @Param('id') id: number,
-    @Req() req: Request & { user?: CustomJwtPayload },
-  ) {
+  async deleteOffre(@Param('id') id: number, @Req() req: Request & { user?: CustomJwtPayload }) {
     const userPayload = req.user;
     if (!userPayload) throw new Error('Utilisateur non authentifié');
     await this.offreService.delete(id, userPayload.id);
@@ -53,7 +50,7 @@ export class OffreController {
     const userPayload = req.user;
     if (!userPayload) throw new Error('Utilisateur non authentifié');
 
-    return await this.offreService.update(id, userPayload.id, updateDto); 
+    return await this.offreService.update(id, userPayload.id, updateDto);
   }
 
   @Get(':id')

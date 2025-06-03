@@ -28,7 +28,7 @@ export class OffreService {
     });
   }
 
-    async delete(id: number, userId: number): Promise<void> {
+  async delete(id: number, userId: number): Promise<void> {
     const offre = await this.offreRepository.findOne({
       where: { id, auteur: { id: userId } },
       relations: ['auteur'],
@@ -41,7 +41,7 @@ export class OffreService {
     await this.offreRepository.remove(offre);
   }
 
-  async update(id:number, userId: number, updateDto: CreateOffreDto): Promise<Offre> {
+  async update(id: number, userId: number, updateDto: CreateOffreDto): Promise<Offre> {
     const offre = await this.offreRepository.findOne({
       where: { id, auteur: { id: userId } },
       relations: ['auteur'],

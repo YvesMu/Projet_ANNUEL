@@ -4,23 +4,26 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 
-interface ProfileData {
-  id: number;
+interface UserProfile {
   prenom: string;
   nom: string;
   email: string;
-  role: string;
+  role: "particulier" | "professionnel";
   domaine: string;
-  photoUrl: string;
-  cvUrl: string;
-  presentation: string;
+  typeOffre: string;
+  photoUrl?: string;
+  presentation?: string;
+  cvUrl?: string;
 }
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [form, setForm] = useState<Partial<ProfileData>>({});
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({
+    presentation: "",
+    cvUrl: "",
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -29,17 +32,20 @@ export default function ProfilePage() {
       return;
     }
 
-    fetch("http://localhost:5000/users/me", {
+    fetch("http://localhost:5000/user/profile", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => {
         setProfile(data);
-        setForm(data);
+        setForm({
+          presentation: data.presentation || "",
+          cvUrl: data.cvUrl || "",
+        });
       })
       .catch((err) => {
         console.error(err);
-        alert("Erreur lors du chargement du profil.");
+        alert("Erreur lors du chargement du profil");
       })
       .finally(() => setLoading(false));
   }, [router]);
@@ -48,13 +54,13 @@ export default function ProfilePage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/users/me", {
+      const res = await fetch("http://localhost:5000/user/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +73,7 @@ export default function ProfilePage() {
       alert("Profil mis à jour !");
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la mise à jour.");
+      alert("Erreur lors de la mise à jour");
     }
   };
 
@@ -77,15 +83,33 @@ export default function ProfilePage() {
     <>
       <Header />
       <main className="max-w-3xl mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6">Mon profil</h1>
+        <h1 className="text-3xl font-bold mb-6">Mon Profil</h1>
+
+        <div className="border rounded p-4 mb-8">
+          <p><strong>Nom :</strong> {profile?.prenom} {profile?.nom}</p>
+          <p><strong>Email :</strong> {profile?.email}</p>
+          <p><strong>Rôle :</strong> {profile?.role}</p>
+          <p><strong>Domaine :</strong> {profile?.domaine}</p>
+          <p><strong>Type Offre :</strong> {profile?.typeOffre}</p>
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input name="prenom" placeholder="Prénom" value={form.prenom || ""} onChange={handleChange} className="border p-2 rounded" />
-          <input name="nom" placeholder="Nom" value={form.nom || ""} onChange={handleChange} className="border p-2 rounded" />
-          <input name="photoUrl" placeholder="Photo (URL)" value={form.photoUrl || ""} onChange={handleChange} className="border p-2 rounded" />
-          <input name="cvUrl" placeholder="CV (URL)" value={form.cvUrl || ""} onChange={handleChange} className="border p-2 rounded" />
-          <textarea name="presentation" placeholder="Présentation" value={form.presentation || ""} onChange={handleChange} className="border p-2 rounded" rows={4} />
-          <button type="submit" className="bg-green-600 text-white p-2 rounded">Enregistrer</button>
+          <textarea
+            name="presentation"
+            placeholder="Présentation"
+            value={form.presentation}
+            onChange={handleChange}
+            className="border p-2 rounded"
+            rows={4}
+          />
+          <input
+            name="cvUrl"
+            placeholder="URL vers ton CV"
+            value={form.cvUrl}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          />
+          <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">Mettre à jour</button>
         </form>
       </main>
     </>

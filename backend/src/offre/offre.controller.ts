@@ -9,11 +9,24 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 
 @Controller('offres')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class OffreController {
   constructor(private readonly offreService: OffreService) {}
 
+  // ✅ PUBLIC : récupération de toutes les offres (public)
+  @Get()
+  async findAll() {
+    return await this.offreService.findAll();
+  }
+
+  // ✅ PUBLIC : détail d'une offre
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.offreService.findById(parseInt(id));
+  }
+
+  // ✅ PROTECTED : création réservée aux professionnels
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
   async create(
     @Body() createOffreDto: CreateOffreDto,
@@ -26,12 +39,9 @@ export class OffreController {
     return this.offreService.create(createOffreDto, auteur);
   }
 
-  @Get()
-  async findAll() {
-    return await this.offreService.findAll();
-  }
-
+  // ✅ PROTECTED : récupérer MES offres en tant que professionnel
   @Get('/my')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
   async findMyOffers(@Req() req: Request & { user?: CustomJwtPayload }) {
     const userPayload = req.user;
@@ -39,7 +49,9 @@ export class OffreController {
     return this.offreService.findByUser(userPayload.id);
   }
 
+  // ✅ PROTECTED : supprimer une offre
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
   async deleteOffre(@Param('id') id: number, @Req() req: Request & { user?: CustomJwtPayload }) {
     const userPayload = req.user;
@@ -48,7 +60,9 @@ export class OffreController {
     return { message: 'Offre supprimée avec succès' };
   }
 
+  // ✅ PROTECTED : modifier une offre
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
   async updateOffre(
     @Param('id') id: number,
@@ -57,12 +71,6 @@ export class OffreController {
   ) {
     const userPayload = req.user;
     if (!userPayload) throw new Error('Utilisateur non authentifié');
-
     return await this.offreService.update(id, userPayload.id, updateDto);
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.offreService.findById(parseInt(id));
   }
 }

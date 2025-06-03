@@ -18,6 +18,7 @@ import { User } from '../user/user.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @Controller('offres')
 export class OffreController {
@@ -54,10 +55,9 @@ export class OffreController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
   @Get('my')
-  async findMyOffers(@Req() req: Request & { user?: CustomJwtPayload }) {
-    const userPayload = req.user;
-    if (!userPayload) throw new Error('Utilisateur non authentifié');
-    return this.offreService.findByUser(userPayload.id);
+  async findMyOffers(@CurrentUser() user: CustomJwtPayload) {
+    if (!user) throw new Error('Utilisateur non authentifié');
+    return this.offreService.findByUser(user.id);
   }
 
   // ✅ PROTECTED : supprimer une offre

@@ -72,7 +72,7 @@ export default function DashboardPro() {
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/edit-offre/${id}`);
+    router.push(`/edit-offer/${id}`);
   };
 
   const handleView = (id: number) => {

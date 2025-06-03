@@ -1,15 +1,20 @@
-import { Controller, Post, Body, Get, Req, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { OffreService } from './offre.service';
 import { CreateOffreDto } from './dto/create-offre.dto';
 import { Request } from 'express';
 import { CustomJwtPayload } from '../common/interfaces/custom-jwt-payload.interface';
 import { User } from '../user/user.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('offres')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class OffreController {
   constructor(private readonly offreService: OffreService) {}
 
   @Post()
+  @Roles('professionnel')
   async create(
     @Body() createOffreDto: CreateOffreDto,
     @Req() req: Request & { user?: CustomJwtPayload },
@@ -27,6 +32,7 @@ export class OffreController {
   }
 
   @Get('/my')
+  @Roles('professionnel')
   async findMyOffers(@Req() req: Request & { user?: CustomJwtPayload }) {
     const userPayload = req.user;
     if (!userPayload) throw new Error('Utilisateur non authentifié');
@@ -34,6 +40,7 @@ export class OffreController {
   }
 
   @Delete(':id')
+  @Roles('professionnel')
   async deleteOffre(@Param('id') id: number, @Req() req: Request & { user?: CustomJwtPayload }) {
     const userPayload = req.user;
     if (!userPayload) throw new Error('Utilisateur non authentifié');
@@ -42,6 +49,7 @@ export class OffreController {
   }
 
   @Put(':id')
+  @Roles('professionnel')
   async updateOffre(
     @Param('id') id: number,
     @Body() updateDto: CreateOffreDto,

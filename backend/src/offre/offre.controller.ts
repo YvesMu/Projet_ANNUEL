@@ -1,4 +1,15 @@
-import { Controller, Post, Body, Get, Req, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Req,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { OffreService } from './offre.service';
 import { CreateOffreDto } from './dto/create-offre.dto';
 import { Request } from 'express';
@@ -20,8 +31,8 @@ export class OffreController {
 
   // ✅ PUBLIC : détail d'une offre
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.offreService.findById(parseInt(id));
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.offreService.findById(id);
   }
 
   // ✅ PROTECTED : création réservée aux professionnels

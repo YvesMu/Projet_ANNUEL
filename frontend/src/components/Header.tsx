@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const [role, setRole] = useState<"particulier" | "professionnel" | null>(null);
+  const [isProfessional, setIsProfessional] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
@@ -15,7 +15,9 @@ export default function Header() {
       setIsAuthenticated(true);
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        setRole(payload.role);
+        if (payload.role === "professionnel") {
+          setIsProfessional(true);
+        }
       } catch (error) {
         console.error("Erreur de décodage du token", error);
       }
@@ -25,41 +27,30 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    setRole(null);
+    setIsProfessional(false);
     router.push("/login");
   };
 
   return (
     <header className="bg-blue-600 text-white p-4 flex justify-between items-center">
-      <Link href="/" className="text-xl font-bold">
-        ProPlatform
-      </Link>
+      <Link href="/" className="text-xl font-bold">ProPlatform</Link>
       <nav className="flex gap-4">
         <Link href="/" className="hover:underline">Accueil</Link>
-        <Link href="/offres" className="hover:underline">Offres</Link>
 
-        {!isAuthenticated && (
+        {isAuthenticated && <Link href="/profile" className="hover:underline">Mon Profil</Link>}
+        {isAuthenticated && <Link href="/dashboard" className="hover:underline">Dashboard</Link>}
+
+        {!isAuthenticated ? (
           <>
             <Link href="/login" className="hover:underline">Connexion</Link>
             <Link href="/register" className="hover:underline">Inscription</Link>
           </>
+        ) : (
+          <button onClick={handleLogout} className="hover:underline">Déconnexion</button>
         )}
 
-        {isAuthenticated && (
-          <>
-            {role === "professionnel" && (
-              <>
-                <Link href="/dashboard-pro" className="hover:underline">Dashboard Pro</Link>
-                <Link href="/create-offer" className="hover:underline font-semibold">Créer une offre</Link>
-              </>
-            )}
-
-            {role === "particulier" && (
-              <Link href="/dashboard" className="hover:underline">Dashboard</Link>
-            )}
-
-            <button onClick={handleLogout} className="hover:underline">Déconnexion</button>
-          </>
+        {isProfessional && (
+          <Link href="/create-offer" className="hover:underline font-semibold">Créer une offre</Link>
         )}
       </nav>
     </header>

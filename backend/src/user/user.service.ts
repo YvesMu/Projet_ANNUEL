@@ -23,4 +23,19 @@ export class UserService {
   async confirmUser(id: number): Promise<void> {
     await this.userRepository.update(id, { isConfirmed: true });
   }
+
+  async updateProfile(userId: number, update: Partial<User>) {
+  await this.userRepository.update(userId, update);
+  return this.userRepository.findOneBy({ id: userId });
+  }
+
+  async findById(userId: number): Promise<User> {
+  const user = await this.userRepository.findOneBy({ id: userId });
+  if (!user) {
+    throw new Error('Utilisateur non trouvé');
+  }
+  return user;
+}
+
+
 }

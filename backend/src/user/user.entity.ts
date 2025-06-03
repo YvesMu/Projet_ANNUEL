@@ -40,4 +40,13 @@ export class User {
 
   @OneToMany(() => Postulation, (postulation) => postulation.candidat)
   postulations: Postulation[];
+
+  @Column({ nullable: true })
+  cvUrl: string;
+
+  @Column({ nullable: true })
+  photoUrl: string;
+
+  @Column({ nullable: true })
+  presentation: string;
 }

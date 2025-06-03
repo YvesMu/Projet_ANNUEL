@@ -51,9 +51,9 @@ export class OffreController {
   }
 
   // ✅ PROTECTED : récupérer MES offres en tant que professionnel
-  @Get('/my')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
+  @Get('my')
   async findMyOffers(@Req() req: Request & { user?: CustomJwtPayload }) {
     const userPayload = req.user;
     if (!userPayload) throw new Error('Utilisateur non authentifié');

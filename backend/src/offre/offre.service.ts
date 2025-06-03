@@ -24,7 +24,7 @@ export class OffreService {
   async findByUser(userId: number): Promise<Offre[]> {
     return this.offreRepository.find({
       where: { auteur: { id: userId } },
-      relations: ['postulations', 'auteur', 'postulations.candidat'],
+      relations: ['auteur', 'postulations'],
     });
   }
 

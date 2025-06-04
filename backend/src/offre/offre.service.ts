@@ -58,7 +58,13 @@ export class OffreService {
   async findById(id: number): Promise<Offre | null> {
     return this.offreRepository.findOne({
       where: { id },
-      relations: ['auteur'],
+      relations: ['auteur', 'postulations', 'postulations.candidat'],
+    });
+  }
+
+  async getAllCandidats() {
+    return this.offreRepository.find({
+      relations: ['postulations', 'postulations.candidat', 'auteur'],
     });
   }
 }

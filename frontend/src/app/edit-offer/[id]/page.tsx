@@ -82,7 +82,7 @@ export default function EditOfferPage() {
     <>
       <Header />
       <main className="max-w-xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Modifier l'offre</h1>
+        <h1 className="text-2xl font-bold mb-4">Modifier l&lsquo;offre</h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input name="titre" placeholder="Titre" value={form.titre} onChange={handleChange} className="border p-2 rounded" />

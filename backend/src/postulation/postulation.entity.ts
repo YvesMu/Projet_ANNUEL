@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, Column } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Offre } from '../offre/offre.entity';
+
+export enum PostulationStatus {
+  EN_ATTENTE = 'en_attente',
+  ENTRETIEN = 'entretien',
+  RETENUE = 'retenu',
+  REFUSÉE = 'refusé',
+}
 
 @Entity()
 export class Postulation {
@@ -15,4 +22,11 @@ export class Postulation {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column({
+    type: 'enum',
+    enum: PostulationStatus,
+    default: PostulationStatus.EN_ATTENTE,
+  })
+  status: PostulationStatus;
 }

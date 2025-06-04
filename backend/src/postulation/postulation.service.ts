@@ -5,6 +5,7 @@ import { Postulation } from './postulation.entity';
 import { CreatePostulationDto } from './dto/create-postulation.dto';
 import { User } from '../user/user.entity';
 import { Offre } from '../offre/offre.entity';
+import { PostulationStatus } from './postulation.entity';
 
 @Injectable()
 export class PostulationService {
@@ -27,6 +28,19 @@ export class PostulationService {
     return this.postulationRepo.find({
       where: { candidat: { id: userId } },
       relations: ['offre'],
+    });
+  }
+
+  async updateStatut(id: number, statut: PostulationStatus): Promise<Postulation> {
+    const postulation = await this.postulationRepo.findOne({ where: { id } });
+    if (!postulation) throw new Error('Postulation introuvable');
+    postulation.status = statut;
+    return this.postulationRepo.save(postulation);
+  }
+
+  async findAllWithRelations(): Promise<Postulation[]> {
+    return this.postulationRepo.find({
+      relations: ['offre', 'candidat'],
     });
   }
 }

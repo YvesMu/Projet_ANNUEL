@@ -73,4 +73,11 @@ export class OffreController {
   ) {
     return await this.offreService.update(id, user.id, updateDto);
   }
+
+  @Get('candidats')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('professionnel')
+  async finAllCandidats() {
+    return this.offreService.getAllCandidats();
+  }
 }

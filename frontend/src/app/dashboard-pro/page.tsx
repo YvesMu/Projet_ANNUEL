@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Offre {
   id: number;
@@ -57,7 +58,6 @@ export default function DashboardPro() {
       return;
     }
 
-    // ✅ ici on appelle le backend seulement si le token est bien décodé et le rôle correct
     const fetchData = async () => {
       try {
         const res = await fetch("http://localhost:5000/offres/my", {
@@ -111,7 +111,15 @@ export default function DashboardPro() {
     <>
       <Header />
       <main className="max-w-6xl mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-4">Mon Dashboard Pro</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold">Mon Dashboard Pro</h1>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => router.push("/gestion-candidats")}
+          >
+            Gérer les candidats
+          </button>
+        </div>
 
         {loading ? (
           <p>Chargement...</p>
@@ -128,15 +136,17 @@ export default function DashboardPro() {
                 <p className="text-sm text-gray-600 mb-2">
                   {offre.domaine} | {offre.typeContrat} | {offre.lieu}
                 </p>
-                <p className="font-bold text-green-600 mb-2">{offre.salaire}€</p>
+                <p className="font-bold text-green-600 mb-2">
+                  {offre.salaire}€
+                </p>
 
                 <div className="flex gap-2 mb-2">
-                  <button
-                    className="bg-yellow-400 text-white py-1 px-3 rounded"
-                    onClick={() => alert("Bientôt : modification")}
-                  >
-                    Modifier
-                  </button>
+                  <Link href={`/dashboard-pro/edit-offer/${offre.id}`}>
+                    <button className="bg-yellow-400 text-white py-1 px-3 rounded">
+                      Modifier
+                    </button>
+                  </Link>
+
                   <button
                     className="bg-red-500 text-white py-1 px-3 rounded"
                     onClick={() => handleDelete(offre.id)}
@@ -149,6 +159,15 @@ export default function DashboardPro() {
                   <h3 className="font-semibold mb-1">
                     Candidatures : {offre.postulations?.length ?? 0}
                   </h3>
+                  <div className="mb-2">
+                    <Link
+                      href={`/dashboard-pro/gestion-candidatures/${offre.id}`}
+                    >
+                      <button className="bg-blue-500 text-white py-1 px-3 rounded">
+                        Gérer les candidatures
+                      </button>
+                    </Link>
+                  </div>
 
                   {offre.postulations?.length > 0 ? (
                     <ul className="space-y-2">

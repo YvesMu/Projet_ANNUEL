@@ -3,10 +3,11 @@ import { User } from '../user/user.entity';
 import { Offre } from '../offre/offre.entity';
 
 export enum PostulationStatus {
-  EN_ATTENTE = 'en_attente',
-  ENTRETIEN = 'entretien',
-  RETENUE = 'retenu',
-  REFUSÉE = 'refusé',
+  EN_ATTENTE = 'EN_ATTENTE',
+  ENTRETIEN = 'ENTRETIEN',
+  RETENUE = 'RETENUE',
+  REFUSE = 'REFUSE',
+  ACCEPTE = 'ACCEPTE',
 }
 
 @Entity()

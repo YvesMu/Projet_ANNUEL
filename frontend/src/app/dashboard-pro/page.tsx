@@ -115,7 +115,7 @@ export default function DashboardPro() {
           <h1 className="text-3xl font-bold">Mon Dashboard Pro</h1>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded"
-            onClick={() => router.push("/gestion-candidats")}
+            onClick={() => router.push("/dashboard-pro/gestion-candidats")}
           >
             Gérer les candidats
           </button>

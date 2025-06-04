@@ -15,7 +15,7 @@ interface Postulation {
     id: number;
     titre: string;
   };
-  statut: "EN_ATTENTE" | "EN_COURS" | "ACCEPTE" | "REFUSE";
+  statut: "EN_ATTENTE" | "EN_COURS" | "ACCEPTE" | "REFUSE" | "ACCEPTE";
 }
 
 export default function GestionCandidats() {
@@ -89,10 +89,11 @@ export default function GestionCandidats() {
                   onChange={(e) => handleStatutChange(p.id, e.target.value)}
                   className="border rounded p-1"
                 >
-                  <option value="EN_ATTENTE">En attente</option>
-                  <option value="EN_COURS">En cours</option>
-                  <option value="ACCEPTE">Accepté</option>
-                  <option value="REFUSE">Refusé</option>
+                  <option value="EN_ATTENTE">EN_ATTENTE</option>
+                  <option value="ENTRETIEN">ENTRETIEN</option>
+                  <option value="RETENUE">RETENUE</option>
+                  <option value="REFUSE">REFUSE</option>
+                  <option value="ACCEPTE">ACCEPTE</option>
                 </select>
               </div>
             ))}

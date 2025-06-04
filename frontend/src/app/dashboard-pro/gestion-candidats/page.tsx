@@ -3,19 +3,26 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 
+interface Candidat {
+  id: number;
+  prenom: string;
+  nom: string;
+  email: string;
+  photoUrl?: string;
+}
+
+interface Offre {
+  id: number;
+  titre: string;
+}
+
+type Status = "EN_ATTENTE" | "ENTRETIEN" | "RETENUE" | "REFUSE" | "ACCEPTE";
+
 interface Postulation {
   id: number;
-  candidat: {
-    id: number;
-    prenom: string;
-    nom: string;
-    email: string;
-  };
-  offre: {
-    id: number;
-    titre: string;
-  };
-  status: "EN_ATTENTE" | "EN_COURS" | "ACCEPTE" | "REFUSE" | "ACCEPTE";
+  candidat: Candidat;
+  offre: Offre;
+  status: Status;
 }
 
 export default function GestionCandidats() {
@@ -45,7 +52,7 @@ export default function GestionCandidats() {
     fetchPostulations();
   }, []);
 
-  const handleStatutChange = async (id: number, newStatut: string) => {
+  const handleStatutChange = async (id: number, newStatut: Status) => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -61,7 +68,7 @@ export default function GestionCandidats() {
       if (!res.ok) throw new Error("Erreur serveur");
 
       setPostulations((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, statut: newStatut as Postulation["status"] } : p))
+        prev.map((p) => (p.id === id ? { ...p, status: newStatut } : p))
       );
     } catch (err) {
       console.error(err);
@@ -80,21 +87,30 @@ export default function GestionCandidats() {
         ) : (
           <div className="space-y-4">
             {postulations.map((p) => (
-              <div key={p.id} className="border p-4 rounded shadow bg-white">
-                <p><b>Candidat :</b> {p.candidat.prenom} {p.candidat.nom} ({p.candidat.email})</p>
-                <p><b>Offre :</b> {p.offre.titre}</p>
-                <p><b>Statut :</b></p>
-                <select
-                  value={p.status}
-                  onChange={(e) => handleStatutChange(p.id, e.target.value)}
-                  className="border rounded p-1"
-                >
-                  <option value="EN_ATTENTE">EN_ATTENTE</option>
-                  <option value="ENTRETIEN">ENTRETIEN</option>
-                  <option value="RETENUE">RETENUE</option>
-                  <option value="REFUSE">REFUSE</option>
-                  <option value="ACCEPTE">ACCEPTE</option>
-                </select>
+              <div key={p.id} className="border p-4 rounded shadow bg-white flex gap-4 items-center">
+                {p.candidat.photoUrl && (
+                  <img
+                    src={p.candidat.photoUrl}
+                    alt="photo"
+                    className="w-20 h-20 rounded-full object-cover border"
+                  />
+                )}
+                <div className="flex-1">
+                  <p><b>Candidat :</b> {p.candidat?.prenom} {p.candidat?.nom} ({p.candidat?.email})</p>
+                  <p><b>Offre :</b> {p.offre?.titre}</p>
+                  <p><b>Statut :</b></p>
+                  <select
+                    value={p.status}
+                    onChange={(e) => handleStatutChange(p.id, e.target.value as Status)}
+                    className="border rounded p-1"
+                  >
+                    <option value="EN_ATTENTE">En attente</option>
+                    <option value="ENTRETIEN">Entretien</option>
+                    <option value="RETENUE">Retenue</option>
+                    <option value="REFUSE">Refusé</option>
+                    <option value="ACCEPTE">Accepté</option>
+                  </select>
+                </div>
               </div>
             ))}
           </div>

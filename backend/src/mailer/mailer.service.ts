@@ -15,4 +15,13 @@ export class MailerService {
       html: `<p>Bienvenue ! Cliquez ici pour confirmer votre compte :</p><p><a href="${url}">${url}</a></p>`,
     });
   }
+
+  async sendGenericEmail(email: string, subject: string, content: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject,
+      text: content,
+      html: `<p>${content}</p>`,
+    });
+  }
 }

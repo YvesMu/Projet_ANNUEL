@@ -3,7 +3,6 @@ import {
   Post,
   Body,
   Get,
-  Req,
   Param,
   Delete,
   Put,
@@ -12,76 +11,65 @@ import {
 } from '@nestjs/common';
 import { OffreService } from './offre.service';
 import { CreateOffreDto } from './dto/create-offre.dto';
-import { Request } from 'express';
-import { CustomJwtPayload } from '../common/interfaces/custom-jwt-payload.interface';
-import { User } from '../user/user.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { CustomJwtPayload } from '../common/interfaces/custom-jwt-payload.interface';
+import { User } from '../user/user.entity';
 
 @Controller('offres')
 export class OffreController {
   constructor(private readonly offreService: OffreService) {}
 
-  // ✅ PUBLIC : récupération de toutes les offres (public)
+  // ✅ PUBLIC : récupérer toutes les offres
   @Get()
   async findAll() {
     return await this.offreService.findAll();
   }
 
-  // ✅ PUBLIC : détail d'une offre
+  // ✅ PUBLIC : récupérer une offre par son id
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.offreService.findById(id);
   }
 
-  // ✅ PROTECTED : création réservée aux professionnels
+  // ✅ PRO : créer une offre (professionnel uniquement)
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
-  async create(
-    @Body() createOffreDto: CreateOffreDto,
-    @Req() req: Request & { user?: CustomJwtPayload },
-  ) {
-    const userPayload = req.user;
-    if (!userPayload) throw new Error('Utilisateur non authentifié');
+  async create(@Body() createOffreDto: CreateOffreDto, @CurrentUser() user: CustomJwtPayload) {
     const auteur = new User();
-    auteur.id = userPayload.id;
+    auteur.id = user.id;
     return this.offreService.create(createOffreDto, auteur);
   }
 
-  // ✅ PROTECTED : récupérer MES offres en tant que professionnel
+  // ✅ PRO : récupérer MES offres
+  @Get('my')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
-  @Get('my')
   async findMyOffers(@CurrentUser() user: CustomJwtPayload) {
-    if (!user) throw new Error('Utilisateur non authentifié');
     return this.offreService.findByUser(user.id);
   }
 
-  // ✅ PROTECTED : supprimer une offre
+  // ✅ PRO : supprimer une offre
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
-  async deleteOffre(@Param('id') id: number, @Req() req: Request & { user?: CustomJwtPayload }) {
-    const userPayload = req.user;
-    if (!userPayload) throw new Error('Utilisateur non authentifié');
-    await this.offreService.delete(id, userPayload.id);
+  async deleteOffre(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: CustomJwtPayload) {
+    await this.offreService.delete(id, user.id);
     return { message: 'Offre supprimée avec succès' };
   }
 
-  // ✅ PROTECTED : modifier une offre
+  // ✅ PRO : modifier une offre
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
   async updateOffre(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateDto: CreateOffreDto,
-    @Req() req: Request & { user?: CustomJwtPayload },
+    @CurrentUser() user: CustomJwtPayload,
   ) {
-    const userPayload = req.user;
-    if (!userPayload) throw new Error('Utilisateur non authentifié');
-    return await this.offreService.update(id, userPayload.id, updateDto);
+    return await this.offreService.update(id, user.id, updateDto);
   }
 }

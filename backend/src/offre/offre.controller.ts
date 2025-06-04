@@ -28,12 +28,6 @@ export class OffreController {
     return await this.offreService.findAll();
   }
 
-  // ✅ PUBLIC : récupérer une offre par son id
-  @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.offreService.findById(id);
-  }
-
   // ✅ PRO : créer une offre (professionnel uniquement)
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -49,7 +43,14 @@ export class OffreController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professionnel')
   async findMyOffers(@CurrentUser() user: CustomJwtPayload) {
+    console.log('Payload reçu dans le controller:', user);
     return this.offreService.findByUser(user.id);
+  }
+
+  // ✅ PUBLIC : récupérer une offre par son id
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.offreService.findById(id);
   }
 
   // ✅ PRO : supprimer une offre

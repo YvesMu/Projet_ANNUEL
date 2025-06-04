@@ -51,13 +51,13 @@ export class PostulationController {
     return this.postulationService.findAllWithRelations();
   }
 
-  @Put(':id/statut')
+  @Put(':id/status')
   @UseGuards(RolesGuard)
   @Roles('professionnel')
-  async updateStatut(
+  async updateStatus(
     @Param('id', ParseIntPipe) id: number,
-    @Body('statut') statut: PostulationStatus,
+    @Body('status') status: PostulationStatus,
   ) {
-    return this.postulationService.updateStatut(id, statut);
+    return this.postulationService.updateStatus(id, status);
   }
 }

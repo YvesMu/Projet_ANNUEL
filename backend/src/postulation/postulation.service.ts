@@ -31,10 +31,10 @@ export class PostulationService {
     });
   }
 
-  async updateStatut(id: number, statut: PostulationStatus): Promise<Postulation> {
+  async updateStatus(id: number, status: PostulationStatus): Promise<Postulation> {
     const postulation = await this.postulationRepo.findOne({ where: { id } });
     if (!postulation) throw new Error('Postulation introuvable');
-    postulation.status = statut;
+    postulation.status = status;
     return this.postulationRepo.save(postulation);
   }
 

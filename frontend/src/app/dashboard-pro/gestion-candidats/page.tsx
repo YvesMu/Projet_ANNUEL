@@ -15,7 +15,7 @@ interface Postulation {
     id: number;
     titre: string;
   };
-  statut: "EN_ATTENTE" | "EN_COURS" | "ACCEPTE" | "REFUSE" | "ACCEPTE";
+  status: "EN_ATTENTE" | "EN_COURS" | "ACCEPTE" | "REFUSE" | "ACCEPTE";
 }
 
 export default function GestionCandidats() {
@@ -50,18 +50,18 @@ export default function GestionCandidats() {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/postulations/${id}/statut`, {
+      const res = await fetch(`http://localhost:5000/postulations/${id}/status`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ statut: newStatut }),
+        body: JSON.stringify({ status: newStatut }),
       });
       if (!res.ok) throw new Error("Erreur serveur");
 
       setPostulations((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, statut: newStatut as Postulation["statut"] } : p))
+        prev.map((p) => (p.id === id ? { ...p, statut: newStatut as Postulation["status"] } : p))
       );
     } catch (err) {
       console.error(err);
@@ -85,7 +85,7 @@ export default function GestionCandidats() {
                 <p><b>Offre :</b> {p.offre.titre}</p>
                 <p><b>Statut :</b></p>
                 <select
-                  value={p.statut}
+                  value={p.status}
                   onChange={(e) => handleStatutChange(p.id, e.target.value)}
                   className="border rounded p-1"
                 >

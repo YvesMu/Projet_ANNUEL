@@ -49,9 +49,10 @@ export default function Header() {
                 Créer une offre
               </Link>
               
-              <Link href="/dashboard-pro/planifier-visio" className="hover:underline font-semibold">
+              <Link href="/planifier-visio" className="hover:underline font-semibold">
                 Planifier un appel
               </Link>
+              <Link href="/mes-visios" className="hover:underline">Mes Visios</Link>
               </>
             )}
             <button onClick={handleLogout} className="hover:underline">Déconnexion</button>

@@ -5,11 +5,13 @@ import { VideoCallService } from './video-call.service';
 import { VideoCallController } from './video-call.controller';
 import { User } from '../user/user.entity';
 import { Offre } from '../offre/offre.entity';
+import { VideoCallScheduler } from './video-call.scheduler';
+import { MailerModule } from '../mailer/mailer.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([VideoCall, User, Offre])],
+  imports: [TypeOrmModule.forFeature([VideoCall, User, Offre]), MailerModule],
   controllers: [VideoCallController],
-  providers: [VideoCallService],
+  providers: [VideoCallService, VideoCallScheduler, MailerModule],
   exports: [VideoCallService],
 })
 export class VideoCallModule {}

@@ -10,6 +10,7 @@ import { typeOrmConfig } from './typeorm.config';
 import { OffreModule } from './offre/offre.module';
 import { PostulationModule } from './postulation/postulation.module';
 import { VideoCallModule } from './video-call/video-call.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { VideoCallModule } from './video-call/video-call.module';
       inject: [ConfigService],
       useFactory: typeOrmConfig,
     }),
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     MailerModule,

@@ -36,4 +36,11 @@ export class UserService {
     }
     return user;
   }
+
+  async getAllCandidats(): Promise<User[]> {
+    return this.userRepository.find({
+      where: { role: 'particulier' },
+      select: ['id', 'prenom', 'nom', 'email', 'photoUrl'], // on limite aux champs nécessaires
+    });
+  }
 }

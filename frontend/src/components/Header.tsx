@@ -44,9 +44,15 @@ export default function Header() {
             <Link href="/profile" className="hover:underline">Mon Profil</Link>
             <Link href="/dashboard" className="hover:underline">Dashboard</Link>
             {isProfessional && (
+              <>
               <Link href="/create-offer" className="hover:underline font-semibold">
                 Créer une offre
               </Link>
+              
+              <Link href="/dashboard-pro/planifier-visio" className="hover:underline font-semibold">
+                Planifier un appel
+              </Link>
+              </>
             )}
             <button onClick={handleLogout} className="hover:underline">Déconnexion</button>
           </>

@@ -109,4 +109,10 @@ export class UserController {
     }
     return this.userService.updateProfile(userId, { cvUrl });
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('candidats')
+  async getCandidats() {
+    return this.userService.getAllCandidats();
+  }
 }

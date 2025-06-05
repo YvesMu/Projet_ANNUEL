@@ -43,6 +43,7 @@ export default function Header() {
           <>
             <Link href="/profile" className="hover:underline">Mon Profil</Link>
             <Link href="/dashboard" className="hover:underline">Dashboard</Link>
+            <Link href="/mes-visios" className="hover:underline">Mes Visios</Link>
             {isProfessional && (
               <>
               <Link href="/create-offer" className="hover:underline font-semibold">

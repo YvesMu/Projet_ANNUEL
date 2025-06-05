@@ -11,19 +11,22 @@ import { CustomJwtPayload } from '../common/interfaces/custom-jwt-payload.interf
 export class VideoCallController {
   constructor(private readonly videoCallService: VideoCallService) {}
 
-  // ✅ Nouveau endpoint de planification
-  @Post('schedule')
+  // ✅ Planifier un appel vidéo (nouveau endpoint clean)
+  @Post('planifier')
   @Roles('professionnel')
-  async scheduleCall(
-    @Body('candidatId') candidatId: number,
-    @Body('offreId') offreId: number,
-    @Body('scheduledAt') scheduledAt: string, // ex : 2025-06-05T14:00:00Z
+  async planifier(
+    @Body() body: { candidatId: number; offreId: number; scheduledAt: string },
     @CurrentUser() user: CustomJwtPayload,
   ) {
-    return this.videoCallService.scheduleCall(candidatId, offreId, user.id, scheduledAt);
+    return this.videoCallService.scheduleCall(
+      body.candidatId,
+      body.offreId,
+      user.id,
+      body.scheduledAt,
+    );
   }
 
-  // ✅ Récupérer tous mes appels (pro ou particulier)
+  // ✅ Récupérer les appels de l'utilisateur (pro ou candidat)
   @Get('my-calls')
   async getMyCalls(@CurrentUser() user: CustomJwtPayload) {
     return this.videoCallService.getCallsByUser(user.id);

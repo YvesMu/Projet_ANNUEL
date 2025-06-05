@@ -58,7 +58,7 @@ export default function PlanifierVisio() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/video-call/create", {
+      const res = await fetch("http://localhost:5000/video-call/planifier", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

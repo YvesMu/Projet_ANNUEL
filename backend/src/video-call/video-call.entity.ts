@@ -7,17 +7,23 @@ export class VideoCall {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Offre)
+  @ManyToOne(() => Offre, { eager: true })
   offre: Offre;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   candidat: User;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   professionnel: User;
 
   @Column()
   roomUrl: string;
+
+  @Column({ type: 'timestamptz' })
+  scheduledAt: Date;
+
+  @Column({ default: false })
+  isNotified: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -25,10 +25,12 @@ export class VideoCallService {
     private offreRepo: Repository<Offre>,
   ) {}
 
-  async createRoom(
+  // ✅ Nouvelle fonction de planification
+  async scheduleCall(
     candidatId: number,
     offreId: number,
     professionnelId: number,
+    scheduledAt: string,
   ): Promise<VideoCall> {
     const DAILY_API_KEY = process.env.DAILY_API_KEY;
     const url = 'https://api.daily.co/v1/rooms';
@@ -69,6 +71,7 @@ export class VideoCallService {
       candidat,
       professionnel,
       offre,
+      scheduledAt: new Date(scheduledAt), // on stocke la date prévue
     });
 
     return await this.videoCallRepo.save(videoCall);

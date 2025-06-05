@@ -9,8 +9,6 @@ import { MailerModule } from './mailer/mailer.module';
 import { typeOrmConfig } from './typeorm.config';
 import { OffreModule } from './offre/offre.module';
 import { PostulationModule } from './postulation/postulation.module';
-import { VideoCallService } from './video-call/video-call.service';
-import { VideoCallController } from './video-call/video-call.controller';
 import { VideoCallModule } from './video-call/video-call.module';
 
 @Module({
@@ -28,7 +26,7 @@ import { VideoCallModule } from './video-call/video-call.module';
     PostulationModule,
     VideoCallModule,
   ],
-  controllers: [AppController, VideoCallController],
-  providers: [AppService, VideoCallService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

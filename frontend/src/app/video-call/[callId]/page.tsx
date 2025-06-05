@@ -10,8 +10,7 @@ export default function VideoCallPage() {
   const router = useRouter();
   const { callId } = params;
 
-  const videoRef = useRef<HTMLDivElement>(null);
-  const [callObject, setCallObject] = useState<DailyCall | null>(null);
+  const callFrameRef = useRef<DailyCall | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,33 +31,27 @@ export default function VideoCallPage() {
         const data = await res.json();
         const roomUrl = data.roomUrl;
 
-        const daily = await DailyIframe.createCallObject({
-          url: roomUrl,
-          showLeaveButton: true,
+        const callFrame = DailyIframe.createFrame({
+          iframeStyle: {
+            position: "fixed",
+            top: "80px",
+            left: "0px",
+            width: "100%",
+            height: "90%",
+            border: "0",
+          },
         });
 
-        setCallObject(daily);
+        callFrame.join({ url: roomUrl });
+        callFrameRef.current = callFrame;
 
-        await daily.join({ url: roomUrl });
-        daily.setLocalVideo(true);
-        daily.setLocalAudio(true);
-        daily.startCamera();
-
-        daily.on("left-meeting", () => {
+        callFrame.on("left-meeting", () => {
           router.push("/dashboard");
         });
-
-        if (videoRef.current) {
-          daily.setTheme({
-            colors: { accent: "#1d4ed8" },
-          });
-
-          await daily.startCamera();
-          await daily.load();
-        }
       } catch (err) {
         console.error("Erreur lors de la connexion à la room :", err);
         alert("Impossible de rejoindre l'appel vidéo.");
+        router.push("/dashboard");
       } finally {
         setLoading(false);
       }
@@ -67,22 +60,20 @@ export default function VideoCallPage() {
     joinCall();
 
     return () => {
-      callObject?.leave();
+      callFrameRef.current?.leave();
     };
-  }, [callId]);
+  }, [callId, router]);
 
   return (
     <>
       <Header />
-      <main className="max-w-5xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Appel Vidéo</h1>
-
-        {loading ? (
-          <p>Connexion à la room...</p>
-        ) : (
-          <div ref={videoRef} style={{ width: "100%", height: "80vh" }} />
-        )}
-      </main>
+      {loading && (
+        <main className="max-w-5xl mx-auto p-4">
+          <h1 className="text-2xl font-bold mb-4">Connexion...</h1>
+          <p>Chargement de la visio...</p>
+        </main>
+      )}
+      <div id="daily-video-container" />
     </>
   );
 }

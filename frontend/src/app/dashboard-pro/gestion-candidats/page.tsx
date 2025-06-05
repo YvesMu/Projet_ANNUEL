@@ -76,6 +76,34 @@ export default function GestionCandidats() {
     }
   };
 
+  const handlePlanifierAppel = async (postulation: Postulation) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch("http://localhost:5000/video-call/create", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          candidatId: postulation.candidat.id,
+          offreId: postulation.offre.id,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Erreur serveur lors de la création de la visio");
+      const data = await res.json();
+
+      // Rediriger directement vers la visio
+      window.location.href = data.roomUrl;
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la planification de l'appel vidéo.");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -110,6 +138,13 @@ export default function GestionCandidats() {
                     <option value="REFUSE">Refusé</option>
                     <option value="ACCEPTE">Accepté</option>
                   </select>
+
+                  <button
+                    onClick={() => handlePlanifierAppel(p)}
+                    className="ml-4 px-3 py-1 bg-blue-500 text-white rounded"
+                  >
+                    📞 Planifier visio
+                  </button>
                 </div>
               </div>
             ))}

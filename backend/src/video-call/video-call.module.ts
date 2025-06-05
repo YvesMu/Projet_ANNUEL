@@ -10,5 +10,6 @@ import { Offre } from '../offre/offre.entity';
   imports: [TypeOrmModule.forFeature([VideoCall, User, Offre])],
   controllers: [VideoCallController],
   providers: [VideoCallService],
+  exports: [VideoCallService],
 })
 export class VideoCallModule {}

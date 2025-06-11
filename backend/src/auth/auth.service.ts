@@ -19,6 +19,8 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
     const user = await this.userService.create({
+      prenom: registerDto.prenom,
+      nom: registerDto.nom,
       email: registerDto.email,
       password: hashedPassword,
       role: registerDto.role,
@@ -26,7 +28,7 @@ export class AuthService {
       domaine: registerDto.domaine,
     });
 
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email, username: user.prenom + ' ' + user.nom };
     const token = this.jwtService.sign(payload);
 
     await this.mailerService.sendUserConfirmation(user.email, token);
@@ -45,7 +47,13 @@ export class AuthService {
       throw new UnauthorizedException('Mot de passe incorrect');
     }
 
-    const payload = { id: user.id, email: user.email, role: user.role };
+    const payload = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      prenom: user.prenom,
+      nom: user.nom,
+    };
     const token = this.jwtService.sign(payload);
 
     return { token };

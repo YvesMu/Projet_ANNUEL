@@ -20,12 +20,26 @@ export default function VideoCallPage() {
   const [loading, setLoading] = useState(true);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [username, setUsername] = useState("Moi");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
       return;
+    }
+
+    // 🔍 Décodage du token pour extraire prenom + nom
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      console.log("Payload JWT:", payload);
+      if (payload?.prenom && payload?.nom) {
+        setUsername(`${payload.prenom} ${payload.nom}`);
+      } else if (payload?.prenom) {
+        setUsername(payload.prenom);
+      }
+    } catch (err) {
+      console.error("Erreur lors du décodage du token JWT :", err);
     }
 
     const joinCall = async () => {
@@ -49,17 +63,16 @@ export default function VideoCallPage() {
             showLeaveButton: true,
           });
 
-          frame.join({ url: roomUrl });
+          await frame.join({ url: roomUrl });
           frame.on("left-meeting", () => router.push("/dashboard"));
 
-          // Écoute les messages entrants
           frame.on("app-message", (event) => {
-            const { data, fromId } = event;
+            const { data } = event;
             if (data.type === "chat") {
               setChatMessages((prev) => [
                 ...prev,
                 {
-                  sender: fromId ?? "Autre",
+                  sender: data.nom || "Autre",
                   text: data.text,
                   timestamp: new Date().toLocaleTimeString(),
                 },
@@ -93,18 +106,22 @@ export default function VideoCallPage() {
     const message = {
       type: "chat",
       text: newMessage,
+      name: username,
     };
+
+    console.log("Envoi du message :", message);
 
     callFrameRef.current?.sendAppMessage(message);
 
     setChatMessages((prev) => [
       ...prev,
       {
-        sender: "Moi",
+        sender: username,
         text: newMessage,
         timestamp: new Date().toLocaleTimeString(),
       },
     ]);
+
     setNewMessage("");
   };
 

@@ -52,7 +52,7 @@
 
 ### Visio 
 * ✅ Appelle Visio 
-
+* 🟧 Chat dans Visio
 
 ---
 

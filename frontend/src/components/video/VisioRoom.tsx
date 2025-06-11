@@ -6,14 +6,15 @@ import Header from "@/components/Header";
 import { useParams, useRouter } from "next/navigation";
 
 export default function VisioRoom() {
-  const params = useParams();
+  const { callId } = useParams();
   const router = useRouter();
-  const { callId } = params;
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const callFrameRef = useRef<DailyCall | null>(null);
   const [roomUrl, setRoomUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Récupère l'URL de la visio
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -43,40 +44,53 @@ export default function VisioRoom() {
     fetchRoom();
   }, [callId, router]);
 
+  // Initialise la visio une fois l'URL reçue
   useEffect(() => {
-    if (roomUrl) {
-      const callFrame = DailyIframe.createFrame(
-        document.getElementById("daily-container") as HTMLElement,
-        {
-          iframeStyle: {
-            position: "fixed",
-            top: "70px",
-            left: "0",
-            width: "100%",
-            height: "90%",
-            border: "0",
-          },
-        }
-      );
+    if (roomUrl && containerRef.current && !callFrameRef.current) {
+      const callFrame = DailyIframe.createFrame(containerRef.current, {
+        iframeStyle: {
+          width: "100%",
+          height: "100%",
+          border: "0",
+          borderRadius: "0.5rem",
+        },
+        showLeaveButton: true,
+      });
 
       callFrame.join({ url: roomUrl });
-
+      callFrame.on("left-meeting", () => router.push("/dashboard"));
       callFrameRef.current = callFrame;
     }
 
     return () => {
       callFrameRef.current?.leave();
+      callFrameRef.current?.destroy();
+      callFrameRef.current = null;
     };
-  }, [roomUrl]);
+  }, [roomUrl, router]);
 
   return (
     <>
       <Header />
-      {loading ? (
-        <p className="p-8 text-center">Chargement de la visio...</p>
-      ) : (
-        <div id="daily-container" />
-      )}
+      <main className="flex flex-col items-center justify-center px-4 py-8 min-h-screen bg-gray-50">
+        {loading ? (
+          <p className="text-center text-gray-600 text-lg mt-20">Chargement de la visio...</p>
+        ) : (
+          <>
+            <h1 className="text-2xl font-semibold mb-4">Salle de visio</h1>
+            <div
+              ref={containerRef}
+              className="w-full max-w-5xl h-[70vh] bg-white rounded-lg shadow border overflow-hidden"
+            />
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="mt-4 px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md font-medium"
+            >
+              Quitter la visio
+            </button>
+          </>
+        )}
+      </main>
     </>
   );
 }

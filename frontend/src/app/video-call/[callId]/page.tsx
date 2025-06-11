@@ -29,7 +29,6 @@ export default function VideoCallPage() {
       return;
     }
 
-    // 🔍 Décodage du token pour extraire prenom + nom
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       console.log("Payload JWT:", payload);
@@ -52,7 +51,14 @@ export default function VideoCallPage() {
 
         const { roomUrl } = await res.json();
 
-        if (!callFrameRef.current && containerRef.current) {
+        // 💡 Toujours détruire toute instance précédente (par sécurité)
+        if (callFrameRef.current) {
+          callFrameRef.current.leave();
+          callFrameRef.current.destroy();
+          callFrameRef.current = null;
+        }
+
+        if (containerRef.current) {
           const frame = DailyIframe.createFrame(containerRef.current, {
             iframeStyle: {
               width: "100%",
@@ -72,7 +78,7 @@ export default function VideoCallPage() {
               setChatMessages((prev) => [
                 ...prev,
                 {
-                  sender: data.nom || "Autre",
+                  sender: data.name || "Autre",
                   text: data.text,
                   timestamp: new Date().toLocaleTimeString(),
                 },
@@ -83,7 +89,7 @@ export default function VideoCallPage() {
           callFrameRef.current = frame;
         }
       } catch (err) {
-        console.error("Erreur lors de la connexion à la room :", err);
+        console.error("❌ Erreur join visio :", err);
         alert("Impossible de rejoindre l'appel vidéo.");
         router.push("/dashboard");
       } finally {
@@ -94,9 +100,11 @@ export default function VideoCallPage() {
     joinCall();
 
     return () => {
-      callFrameRef.current?.leave();
-      callFrameRef.current?.destroy();
-      callFrameRef.current = null;
+      if (callFrameRef.current) {
+        callFrameRef.current.leave();
+        callFrameRef.current.destroy();
+        callFrameRef.current = null;
+      }
     };
   }, [callId, router]);
 
@@ -109,8 +117,7 @@ export default function VideoCallPage() {
       name: username,
     };
 
-    console.log("Envoi du message :", message);
-
+    console.log("📤 Envoi du message :", message);
     callFrameRef.current?.sendAppMessage(message);
 
     setChatMessages((prev) => [
@@ -134,7 +141,10 @@ export default function VideoCallPage() {
         ) : (
           <div className="flex w-full max-w-7xl gap-4">
             {/* Visio */}
-            <div className="w-2/3 h-[70vh] bg-white rounded-lg shadow overflow-hidden" ref={containerRef} />
+            <div
+              className="w-2/3 h-[70vh] bg-white rounded-lg shadow overflow-hidden"
+              ref={containerRef}
+            />
 
             {/* Chat */}
             <div className="w-1/3 h-[70vh] flex flex-col bg-white rounded-lg shadow p-4">

@@ -49,6 +49,11 @@
 * ✅ Envoi d'email de confirmation d'inscription
 * ✅ Envoi d'email automatique lorsqu’un professionnel change le statut d'une candidature
 
+
+### Visio 
+* ✅ Appelle Visio 
+
+
 ---
 
 ## 📦 Prérequis

@@ -1,10 +1,10 @@
 "use client";
 
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer, /*EventProps*/ } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { addHours, parseISO } from "date-fns";
+import { addHours, parseISO, isBefore } from "date-fns";
 import moment from "moment";
 
 const localizer = momentLocalizer(moment);
@@ -14,12 +14,14 @@ interface Event {
   title: string;
   start: Date;
   end: Date;
+  isPast: boolean;
 }
 
 interface VisioCall {
   id: number;
   scheduledAt: string;
   offre: { titre: string };
+  candidat: { prenom: string; nom: string };
 }
 
 export default function CalendrierInteractif() {
@@ -35,12 +37,18 @@ export default function CalendrierInteractif() {
     })
       .then((res) => res.json())
       .then((data: VisioCall[]) => {
-        const formatted = data.map((call) => ({
-          id: call.id,
-          title: `📹 Visio : ${call.offre.titre}`,
-          start: parseISO(call.scheduledAt),
-          end: addHours(parseISO(call.scheduledAt), 1),
-        }));
+        const now = new Date();
+        const formatted = data.map((call) => {
+          const start = parseISO(call.scheduledAt);
+          const end = addHours(start, 1);
+          return {
+            id: call.id,
+            title: `📹 ${call.offre.titre} avec ${call.candidat.prenom} ${call.candidat.nom}`,
+            start,
+            end,
+            isPast: isBefore(end, now),
+          };
+        });
         setEvents(formatted);
       });
   }, []);
@@ -48,6 +56,23 @@ export default function CalendrierInteractif() {
   const handleSlotSelect = ({ start }: { start: Date }) => {
     const localISOString = start.toISOString().slice(0, 16);
     router.push(`/planifier-visio?date=${localISOString}`);
+  };
+
+  const handleEventSelect = (event: Event) => {
+    if (!event.isPast) {
+      router.push(`/video-call/${event.id}`);
+    }
+  };
+
+  const eventStyleGetter = (event: Event) => {
+    return {
+      style: {
+        backgroundColor: event.isPast ? "#ccc" : "#2563eb", // gris ou bleu
+        color: event.isPast ? "#666" : "white",
+        cursor: event.isPast ? "not-allowed" : "pointer",
+        opacity: event.isPast ? 0.6 : 1,
+      },
+    };
   };
 
   return (
@@ -58,7 +83,7 @@ export default function CalendrierInteractif() {
         selectable
         startAccessor="start"
         endAccessor="end"
-        onSelectEvent={(event) => router.push(`/video-call/${event.id}`)}
+        onSelectEvent={handleEventSelect}
         onSelectSlot={handleSlotSelect}
         views={["month", "week", "day"]}
         culture="fr"
@@ -74,6 +99,7 @@ export default function CalendrierInteractif() {
           time: "Heure",
           event: "Événement",
         }}
+        eventPropGetter={eventStyleGetter}
         style={{ backgroundColor: "white", borderRadius: "8px", padding: "10px" }}
       />
     </div>

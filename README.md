@@ -52,7 +52,11 @@
 
 ### Visio 
 * ✅ Appelle Visio 
-* 🟧 Chat dans Visio
+* ✅ Chat Visio 
+* ✅ Envoie de mail pour prevenir debut de visio dans 10 min
+ 
+
+
 
 ---
 

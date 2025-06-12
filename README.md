@@ -54,6 +54,8 @@
 * ✅ Appelle Visio 
 * ✅ Chat Visio 
 * ✅ Envoie de mail pour prevenir debut de visio dans 10 min
+* ✅ Visio Planifier avec filtre 
+
  
 
 

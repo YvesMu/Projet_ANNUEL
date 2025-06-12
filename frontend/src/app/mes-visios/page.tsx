@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
+import CalendrierVisio from "@/components/Calendrier";
 
 interface VideoCall {
   id: number;
@@ -74,7 +75,7 @@ export default function MesVisios() {
     });
 
     setFilteredCalls(result);
-    setCurrentPage(1); // Reset page on filter
+    setCurrentPage(1);
   }, [search, filter, calls]);
 
   const totalPages = Math.ceil(filteredCalls.length / itemsPerPage);
@@ -92,7 +93,7 @@ export default function MesVisios() {
       <Header />
       <main className="max-w-5xl mx-auto p-4">
         <h1 className="text-3xl font-bold mb-4">Mes Visios Planifiées</h1>
-
+        <CalendrierVisio />
         <div className="flex flex-wrap gap-4 mb-4">
           <input
             type="text"

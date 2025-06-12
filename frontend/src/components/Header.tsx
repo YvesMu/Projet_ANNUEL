@@ -53,7 +53,9 @@ export default function Header() {
               <Link href="/planifier-visio" className="hover:underline font-semibold">
                 Planifier un appel
               </Link>
-              {/* <Link href="/mes-visios" className="hover:underline">Mes Visios</Link> */}
+              <Link href="/calendrier" className="hover:underline font-semibold">
+                Mon Calendrier
+              </Link>
               </>
             )}
             <button onClick={handleLogout} className="hover:underline">Déconnexion</button>

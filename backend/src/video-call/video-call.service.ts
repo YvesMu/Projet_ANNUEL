@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { VideoCall } from './video-call.entity';
 import { User } from '../user/user.entity';
 import { Offre } from '../offre/offre.entity';
+import { MailerService } from '../mailer/mailer.service';
+import * as dayjs from 'dayjs';
 
 interface DailyRoomResponse {
   id: string;
@@ -23,9 +25,10 @@ export class VideoCallService {
 
     @InjectRepository(Offre)
     private offreRepo: Repository<Offre>,
+
+    private readonly mailerService: MailerService,
   ) {}
 
-  // ✅ Nouvelle fonction de planification
   async scheduleCall(
     candidatId: number,
     offreId: number,
@@ -71,10 +74,32 @@ export class VideoCallService {
       candidat,
       professionnel,
       offre,
-      scheduledAt: new Date(scheduledAt), // on stocke la date prévue
+      scheduledAt: new Date(scheduledAt),
     });
 
-    return await this.videoCallRepo.save(videoCall);
+    const savedCall = await this.videoCallRepo.save(videoCall);
+
+    // ✅ Format date et contenu de l’email
+    const formatted = dayjs(scheduledAt).format('DD/MM/YYYY HH:mm');
+    const message = `📅 Vous avez une visio prévue le ${formatted}.\n\n🔗 Lien : ${roomUrl}`;
+
+    // 📨 Email immédiat au candidat
+    await this.mailerService.sendGenericEmail(candidat.email, 'Visio programmée', message);
+
+    // ⏰ Programmation du rappel 5 minutes avant
+    const msUntilReminder = dayjs(scheduledAt).subtract(5, 'minute').diff(dayjs());
+
+    if (msUntilReminder > 0) {
+      setTimeout(() => {
+        this.mailerService.sendGenericEmail(
+          candidat.email,
+          '⏰ Rappel - Visio dans 5 minutes',
+          `Votre visio commence bientôt ! Voici le lien : ${roomUrl}`,
+        );
+      }, msUntilReminder);
+    }
+
+    return savedCall;
   }
 
   async getCallsByUser(userId: number): Promise<VideoCall[]> {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Candidat {
   id: number;
@@ -18,11 +18,16 @@ interface Offre {
 
 export default function PlanifierVisio() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [scheduledAt, setScheduledAt] = useState<string>(() => {
+    const urldate = searchParams.get("date");
+    return urldate ? urldate :"";
+  });
+
   const [candidats, setCandidats] = useState<Candidat[]>([]);
   const [offres, setOffres] = useState<Offre[]>([]);
   const [selectedCandidat, setSelectedCandidat] = useState<number | null>(null);
   const [selectedOffre, setSelectedOffre] = useState<number | null>(null);
-  const [scheduledAt, setScheduledAt] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

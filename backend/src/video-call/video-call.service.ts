@@ -79,14 +79,34 @@ export class VideoCallService {
 
     const savedCall = await this.videoCallRepo.save(videoCall);
 
-    // ✅ Format date et contenu de l’email
-    const formatted = dayjs(scheduledAt).format('DD/MM/YYYY HH:mm');
-    const message = `📅 Vous avez une visio prévue le ${formatted}.\n\n🔗 Lien : ${roomUrl}`;
+    // Format date
+    const formatted = dayjs(scheduledAt).format('DD/MM/YYYY à HH:mm');
 
-    // 📨 Email immédiat au candidat
-    await this.mailerService.sendGenericEmail(candidat.email, 'Visio programmée', message);
+    // Contenu des emails
+    const emailContent = (prenom: string | null) => `
+      Bonjour ${prenom ?? ''},<br><br>
+      📅 Vous avez une visio prévue le <strong>${formatted}</strong>.<br><br>
+      👉 <a href="${roomUrl}" target="_blank">Cliquez ici pour rejoindre la visio</a>
+    `;
 
-    // ⏰ Programmation du rappel 5 minutes avant
+    const reminderContent = `
+      ⏰ Votre visio commence dans 5 minutes.<br><br>
+      👉 <a href="${roomUrl}" target="_blank">Rejoindre la visio</a>
+    `;
+
+    // Envoi immédiat aux 2 utilisateurs
+    await this.mailerService.sendGenericEmail(
+      candidat.email,
+      '📅 Visio programmée',
+      emailContent(candidat.prenom),
+    );
+    await this.mailerService.sendGenericEmail(
+      professionnel.email,
+      '📅 Visio programmée',
+      emailContent(professionnel.prenom),
+    );
+
+    // Rappel 5 minutes avant
     const msUntilReminder = dayjs(scheduledAt).subtract(5, 'minute').diff(dayjs());
 
     if (msUntilReminder > 0) {
@@ -94,7 +114,15 @@ export class VideoCallService {
         this.mailerService.sendGenericEmail(
           candidat.email,
           '⏰ Rappel - Visio dans 5 minutes',
-          `Votre visio commence bientôt ! Voici le lien : ${roomUrl}`,
+          reminderContent,
+        );
+      }, msUntilReminder);
+
+      setTimeout(() => {
+        this.mailerService.sendGenericEmail(
+          professionnel.email,
+          '⏰ Rappel - Visio dans 5 minutes',
+          reminderContent,
         );
       }, msUntilReminder);
     }

@@ -11,8 +11,11 @@ export class UserService {
   ) {}
 
   async findByEmail(email: string): Promise<User | undefined> {
-    const user = await this.userRepository.findOne({ where: { email } });
-    return user ?? undefined;
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'password', 'role', 'prenom', 'nom'],
+    });
+    return user || undefined;
   }
 
   async create(userData: Partial<User>): Promise<User> {

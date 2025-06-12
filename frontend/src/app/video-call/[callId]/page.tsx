@@ -73,8 +73,12 @@ export default function VideoCallPage() {
           frame.on("left-meeting", () => router.push("/dashboard"));
 
           frame.on("app-message", (event) => {
+            console.log("📥 Message reçu complet :", JSON.stringify(event, null, 2)); // ✅ pour debug
+
             const { data } = event;
             if (data.type === "chat") {
+              console.log("📥 Chat avec nom :", data.name);
+
               setChatMessages((prev) => [
                 ...prev,
                 {
@@ -117,7 +121,11 @@ export default function VideoCallPage() {
       name: username,
     };
 
-    console.log("📤 Envoi du message :", message);
+    console.log("📤 Envoi du message :", {
+      type: "chat",
+      text: newMessage,
+      name: username,
+    });
     callFrameRef.current?.sendAppMessage(message);
 
     setChatMessages((prev) => [

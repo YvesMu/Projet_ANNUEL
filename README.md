@@ -102,13 +102,16 @@ DATABASE_PASSWORD=postgres
 DATABASE_NAME=jobplatform
 
 JWT_SECRET=monSuperSecretUltraLong
-JWT_EXPIRES_IN=3600s
+JWT_EXPIRES_IN=86400s
 
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USER=tonemail@gmail.com
 MAIL_PASSWORD=mot_de_passe_app
 MAIL_FROM=Projet Annuel <tonemail@gmail.com>
+
+DAILY_API_KEY=xxxxxxxxxxx
+
 ```
 
 ### 4️⃣ Installer les dépendances Backend

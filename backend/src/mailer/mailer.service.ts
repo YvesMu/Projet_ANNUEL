@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService as NestMailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailerService {
-  constructor(private readonly mailerService: NestMailerService) {}
+  constructor(
+    private readonly mailerService: NestMailerService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async sendUserConfirmation(email: string, token: string) {
-    const url = `http://localhost:31000/confirm-account?token=${token}`;
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+    const url = `${frontendUrl}/confirm-account?token=${token}`;
 
     await this.mailerService.sendMail({
       to: email,

@@ -1,15 +1,7 @@
-// Pas de "use client" ici !
-import dynamic from "next/dynamic";
+import OffreDetailWrapper from "./OffreDetailWrapper";
 
-// ➕ Le composant client dynamique (sans SSR)
-const OffreDetail = dynamic(() => import("./OffreDetailClient"), {
-  ssr: false,
-});
-
-export async function generateStaticParams() {
-  return [];
-}
+export const dynamicParams = true;
 
 export default function Page() {
-  return <OffreDetail />;
+  return <OffreDetailWrapper />;
 }

@@ -35,7 +35,7 @@ export default function MesVisios() {
 
     const fetchCalls = async () => {
       try {
-        const res = await fetch("http://localhost:5000/video-call/my-calls", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/my-calls`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

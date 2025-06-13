@@ -42,7 +42,7 @@ export default function GestionCandidaturesClient() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/offres/${offreId}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/${offreId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -35,7 +35,7 @@ export default function GestionCandidats() {
 
     const fetchPostulations = async () => {
       try {
-        const res = await fetch("http://localhost:5000/postulations", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/postulations`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Erreur serveur");
@@ -57,7 +57,7 @@ export default function GestionCandidats() {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/postulations/${id}/status`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/postulations/${id}/status`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -81,7 +81,7 @@ export default function GestionCandidats() {
     if (!token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/video-call/create", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/create`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

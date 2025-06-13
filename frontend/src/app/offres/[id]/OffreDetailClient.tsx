@@ -22,7 +22,7 @@ export default function OffreDetailClient() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/offres/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/${id}`)
       .then((res) => res.json())
       .then((data) => setOffre(data))
       .catch((err) => console.error(err))
@@ -38,7 +38,7 @@ export default function OffreDetailClient() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/postulations", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/postulations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

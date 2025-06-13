@@ -15,7 +15,7 @@ export default function ConfirmAccount() {
       return;
     }
 
-    fetch(`http://localhost:5000/auth/confirm-account?token=${token}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/confirm-account?token=${token}`, {
       method: "GET",
     })
       .then((res) => res.json())

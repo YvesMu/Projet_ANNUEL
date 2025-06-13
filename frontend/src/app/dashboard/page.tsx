@@ -44,7 +44,7 @@ export default function Dashboard() {
         return;
       }
 
-      fetch("http://localhost:5000/postulations/my", {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/postulations/my`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

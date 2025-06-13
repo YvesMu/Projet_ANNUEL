@@ -29,7 +29,7 @@ export default function PlanifierVisio() {
     // 🟢 Récupérer tous les candidats
     const fetchCandidats = async () => {
       try {
-        const res = await fetch("http://localhost:5000/user/candidats", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/candidats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -43,7 +43,7 @@ export default function PlanifierVisio() {
     // 🟢 Récupérer mes offres (en tant que professionnel)
     const fetchOffres = async () => {
       try {
-        const res = await fetch("http://localhost:5000/offres/my", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -66,7 +66,7 @@ export default function PlanifierVisio() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/video-call/schedule", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/schedule`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

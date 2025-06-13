@@ -23,7 +23,7 @@ export default function OffresPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/offres")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres`)
       .then(async (res) => {
         if (!res.ok) {
           console.error("Erreur HTTP:", res.status);

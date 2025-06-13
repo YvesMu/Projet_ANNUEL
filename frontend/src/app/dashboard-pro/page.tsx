@@ -60,7 +60,7 @@ export default function DashboardPro() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:5000/offres/my", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/my`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ export default function DashboardPro() {
     if (!confirm("Confirmer la suppression de l'offre ?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/offres/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

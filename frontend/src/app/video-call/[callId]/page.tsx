@@ -44,7 +44,7 @@ export default function VideoCallPage() {
 
     const joinCall = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/video-call/${callId}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/${callId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

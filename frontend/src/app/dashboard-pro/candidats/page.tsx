@@ -17,7 +17,7 @@ export default function CandidatsList() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:5000/offres/candidats", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/candidats`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())

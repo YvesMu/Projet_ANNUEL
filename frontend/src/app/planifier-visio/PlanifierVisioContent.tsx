@@ -34,7 +34,7 @@ export default function PlanifierVisio() {
     if (!token) return;
 
     // Récupérer les candidats
-    fetch("http://localhost:5000/user/candidats", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/candidats`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -42,7 +42,7 @@ export default function PlanifierVisio() {
       .catch((err) => console.error(err));
 
     // Récupérer les offres du professionnel
-    fetch("http://localhost:5000/offres/my", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/my`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -62,7 +62,7 @@ export default function PlanifierVisio() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/video-call/planifier", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/planifier`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

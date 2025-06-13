@@ -1,16 +1,24 @@
-FROM node:20 as build
+# Étape de build
+FROM node:20 AS builder
 
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm install
-COPY . .
 
+COPY . .
 RUN npm run build
 
-FROM nginx:stable-alpine
+# Étape d'exécution
+FROM node:20-alpine AS runner
 
-COPY --from=build /app/.next/standalone /usr/share/nginx/html
-COPY --from=build /app/.next/static /usr/share/nginx/html/_next/static
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+ENV PORT=3000
 EXPOSE 3000
+
+CMD ["node", "server.js"]

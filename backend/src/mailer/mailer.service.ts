@@ -6,7 +6,7 @@ export class MailerService {
   constructor(private readonly mailerService: NestMailerService) {}
 
   async sendUserConfirmation(email: string, token: string) {
-    const url = `http://localhost:3000/confirm-account?token=${token}`;
+    const url = `http://localhost:31000/confirm-account?token=${token}`;
 
     await this.mailerService.sendMail({
       to: email,

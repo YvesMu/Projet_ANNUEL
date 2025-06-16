@@ -49,7 +49,7 @@ export class MailerService {
           </a>
         </p>
         <p>Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :</p>
-        <p><a href="${url}">${url}</a></p>
+        <p><a href="${url}" style="color: #2563eb; text-decoration: underline;">${url}</a></p>
         <hr>
         <p style="font-size: 0.9em; color: #999;">Si vous n’avez pas demandé cette réinitialisation, ignorez ce message.</p>
       </div>

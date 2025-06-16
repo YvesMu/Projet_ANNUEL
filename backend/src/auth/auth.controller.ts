@@ -37,7 +37,7 @@ export class AuthController {
   }
 
   @Post('reset-password')
-  resetPassword(@Query('token') token: string, @Body('newPassword') newPassword: string) {
+  resetPassword(@Body('token') token: string, @Body('password') newPassword: string) {
     if (!newPassword) throw new BadRequestException('Mot de passe requis');
     return this.authService.resetPassword(token, newPassword);
   }

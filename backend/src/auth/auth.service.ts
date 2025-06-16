@@ -82,14 +82,7 @@ export class AuthService {
       expiresIn: this.configService.get('JWT_EXPIRES_IN'),
     });
 
-    const resetUrl = `${this.configService.get<string>('FRONTEND_URL')}/reset-password?token=${token}`;
-    const message = `Cliquez ici pour réinitialiser votre mot de passe : ${resetUrl}`;
-
-    await this.mailerService.sendGenericEmail(
-      user.email,
-      'Réinitialisation de mot de passe',
-      message,
-    );
+    await this.mailerService.sendResetPassword(user.email, token);
     return { message: 'Un email de réinitialisation a été envoyé' };
   }
 

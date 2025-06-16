@@ -32,7 +32,6 @@ export interface ChatContextProps {
   selectConversation: (id: number) => void;
   conversations: Conversation[];
   users: User[];
-  // userId?: number | null;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -43,13 +42,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedConversationId, setSelectedConversationId] = useState<
-    number | null
-  >(null);
+  const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  // const userId = token ? JSON.parse(atob(token.split(".")[1])).id : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const toggleOpen = () => {
     setIsOpen((prev) => !prev);
@@ -59,7 +54,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const selectConversation = async (id: number) => {
     setSelectedConversationId(id);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/messages/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -73,7 +68,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     if (!selectedConversationId) return;
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedConversationId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/send/${selectedConversationId}`,
         {
           method: "POST",
           headers: {
@@ -93,7 +88,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const fetchConversations = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/conversations`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -106,7 +101,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const fetchUsers = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/candidats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

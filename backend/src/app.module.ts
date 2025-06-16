@@ -11,6 +11,7 @@ import { OffreModule } from './offre/offre.module';
 import { PostulationModule } from './postulation/postulation.module';
 import { VideoCallModule } from './video-call/video-call.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     OffreModule,
     PostulationModule,
     VideoCallModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

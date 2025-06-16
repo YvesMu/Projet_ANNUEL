@@ -3,20 +3,16 @@
 import { useChatContext } from "./ChatContext";
 
 export default function MessageList() {
-  const { messages, userId } = useChatContext();
+  const { messages } = useChatContext();
 
   return (
-    <div className="flex flex-col gap-2">
-      {messages.map((msg, i) => (
-        <div
-          key={i}
-          className={`p-2 rounded-lg max-w-[75%] text-sm ${
-            msg.senderId === userId
-              ? "bg-blue-100 self-end"
-              : "bg-gray-200 self-start"
-          }`}
-        >
-          {msg.content}
+    <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      {messages.map((msg) => (
+        <div key={msg.id} className="text-sm">
+          <p>
+            <strong>{msg.senderId}</strong> : {msg.content}
+          </p>
+          <span className="text-xs text-gray-400">{new Date(msg.createdAt).toLocaleTimeString()}</span>
         </div>
       ))}
     </div>

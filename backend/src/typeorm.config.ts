@@ -4,6 +4,8 @@ import { User } from './user/user.entity';
 import { Offre } from './offre/offre.entity';
 import { Postulation } from './postulation/postulation.entity';
 import { VideoCall } from './video-call/video-call.entity';
+import { Conversation } from './conversation/conversation.entity';
+import { Message } from './message/message.entity';
 
 export const typeOrmConfig = (configService: ConfigService): TypeOrmModuleOptions => ({
   type: 'postgres',
@@ -12,6 +14,6 @@ export const typeOrmConfig = (configService: ConfigService): TypeOrmModuleOption
   username: configService.get<string>('DATABASE_USER'),
   password: configService.get<string>('DATABASE_PASSWORD'),
   database: configService.get<string>('DATABASE_NAME'),
-  entities: [User, Offre, Postulation, VideoCall],
+  entities: [User, Offre, Postulation, VideoCall, Conversation, Message],
   synchronize: true,
 });

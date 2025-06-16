@@ -4,27 +4,26 @@ import { useState } from "react";
 import { useChatContext } from "./ChatContext";
 
 export default function MessageInput() {
-  const [text, setText] = useState("");
   const { sendMessage } = useChatContext();
+  const [text, setText] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (text.trim()) {
-      sendMessage(text.trim());
-      setText("");
-    }
+    if (!text.trim()) return;
+    sendMessage(text.trim());
+    setText("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form onSubmit={handleSend} className="flex p-2 border-t">
       <input
         type="text"
-        className="flex-1 border rounded px-2 py-1 text-sm"
-        placeholder="Votre message..."
         value={text}
         onChange={(e) => setText(e.target.value)}
+        className="flex-1 border rounded p-2 mr-2"
+        placeholder="Votre message..."
       />
-      <button type="submit" className="text-blue-600 font-semibold text-sm">
+      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
         Envoyer
       </button>
     </form>

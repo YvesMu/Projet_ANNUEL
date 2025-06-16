@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ChatProvider } from "@/components/ChatWidget/ChatContext";
+import ChatWidget from "@/components/ChatWidget/ChatWidget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +25,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ChatProvider>
         {children}
+        <ChatWidget />
+        </ChatProvider>
       </body>
     </html>
   );

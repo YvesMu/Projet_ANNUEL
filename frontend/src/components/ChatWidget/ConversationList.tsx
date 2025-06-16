@@ -5,32 +5,33 @@ import { useChatContext } from "./ChatContext";
 export default function ConversationList() {
   const {
     conversations,
+    users,
     selectConversation,
     selectedConversationId,
-    users,
   } = useChatContext();
 
-  const getUserName = (conv: { senderId: number; recipientId: number }) => {
-    const userId = localStorage.getItem("token")
+  const getUsername = (conv: { senderId: number; recipientId: number }) => {
+    const currentUserId = typeof window !== "undefined"
       ? JSON.parse(atob(localStorage.getItem("token")!.split(".")[1])).id
       : null;
-    const partnerId = conv.senderId === userId ? conv.recipientId : conv.senderId;
-    const partner = users.find((u) => u.id === partnerId);
-    return partner ? `${partner.prenom} ${partner.nom}` : "Utilisateur inconnu";
+
+    const otherUserId = conv.senderId === currentUserId ? conv.recipientId : conv.senderId;
+    const user = users.find((u) => u.id === otherUserId);
+    return user ? `${user.prenom} ${user.nom}` : `Utilisateur #${otherUserId}`;
   };
 
   return (
-    <div className="border-b p-2">
+    <div className="border-b max-h-48 overflow-auto">
       {conversations.map((conv) => (
-        <div
+        <button
           key={conv.id}
-          className={`p-2 cursor-pointer rounded ${
-            selectedConversationId === conv.id ? "bg-blue-100" : "hover:bg-gray-100"
-          }`}
           onClick={() => selectConversation(conv.id)}
+          className={`w-full text-left px-3 py-2 hover:bg-gray-100 ${
+            conv.id === selectedConversationId ? "bg-gray-200 font-semibold" : ""
+          }`}
         >
-          {getUserName(conv)}
-        </div>
+          {getUsername(conv)}
+        </button>
       ))}
     </div>
   );

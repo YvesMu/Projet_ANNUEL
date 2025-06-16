@@ -78,8 +78,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           body: JSON.stringify({ content }),
         }
       );
-      const newMsg = await res.json();
-      setMessages((prev) => [...prev, newMsg]);
+      await res.json();
+      await selectConversation(selectedConversationId);
     } catch (err) {
       console.error("Erreur envoi message :", err);
     }
@@ -101,7 +101,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const fetchUsers = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/candidats`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -117,6 +117,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       fetchUsers();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (selectedConversationId && isOpen) {
+        selectConversation(selectedConversationId);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [selectedConversationId, isOpen]);
 
   return (
     <ChatContext.Provider

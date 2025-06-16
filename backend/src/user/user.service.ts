@@ -54,4 +54,10 @@ export class UserService {
       select: ['id', 'prenom', 'nom', 'email', 'photoUrl'],
     });
   }
+
+  async findAllUsers(): Promise<User[]> {
+    return this.userRepository.find({
+      select: ['id', 'prenom', 'nom', 'email', 'photoUrl', 'role'],
+    });
+  }
 }

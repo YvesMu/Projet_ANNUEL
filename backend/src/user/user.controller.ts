@@ -114,4 +114,10 @@ export class UserController {
   async getCandidats() {
     return this.userService.getAllCandidats();
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getAllUsers() {
+    return this.userService.findAllUsers();
+  }
 }

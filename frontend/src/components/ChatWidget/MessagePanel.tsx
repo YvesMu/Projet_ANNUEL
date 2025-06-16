@@ -5,10 +5,8 @@ import MessageInput from "./MessageInput";
 
 export default function MessagePanel() {
   return (
-    <div className="flex flex-col flex-1 justify-between p-4 h-full">
-      <div className="flex-1 overflow-y-auto mb-4">
-        <MessageList />
-      </div>
+    <div className="flex flex-col h-full">
+      <MessageList />
       <MessageInput />
     </div>
   );

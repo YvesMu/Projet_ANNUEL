@@ -5,16 +5,28 @@ import { useChatContext } from "./ChatContext";
 export default function MessageList() {
   const { messages } = useChatContext();
 
+  const userId =
+    typeof window !== "undefined" && localStorage.getItem("token")
+      ? JSON.parse(atob(localStorage.getItem("token")!.split(".")[1])).id
+      : null;
+
   return (
-    <div className="flex-1 overflow-auto p-3">
-      {messages.map((msg) => (
-        <div key={msg.id} className="mb-2">
-          <div className="text-sm text-gray-600">
-            {new Date(msg.createdAt).toLocaleTimeString()}
+    <div className="flex flex-col gap-2 p-2 overflow-y-auto h-64">
+      {messages.map((msg) => {
+        const isMe = msg.senderId === userId;
+        return (
+          <div
+            key={msg.id}
+            className={`p-2 rounded max-w-xs ${
+              isMe
+                ? "bg-blue-500 text-white self-end"
+                : "bg-gray-200 text-black self-start"
+            }`}
+          >
+            {msg.content}
           </div>
-          <div className="bg-gray-100 rounded px-3 py-1">{msg.content}</div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

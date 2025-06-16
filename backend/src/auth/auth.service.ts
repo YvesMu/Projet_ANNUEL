@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { MailerService } from '../mailer/mailer.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -68,6 +70,37 @@ export class AuthService {
       return { message: 'Votre compte a été confirmé avec succès !' };
     } catch {
       throw new UnauthorizedException('Token invalide ou expiré');
+    }
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.userService.findByEmail(email);
+    if (!user) throw new BadRequestException('Utilisateur non trouvé');
+
+    const payload = { id: user.id, email: user.email };
+    const token = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('JWT_EXPIRES_IN'),
+    });
+
+    const resetUrl = `${this.configService.get<string>('FRONTEND_URL')}/reset-password?token=${token}`;
+    const message = `Cliquez ici pour réinitialiser votre mot de passe : ${resetUrl}`;
+
+    await this.mailerService.sendGenericEmail(
+      user.email,
+      'Réinitialisation de mot de passe',
+      message,
+    );
+    return { message: 'Un email de réinitialisation a été envoyé' };
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    try {
+      const payload = this.jwtService.verify<{ id: number }>(token);
+      const hashed = await bcrypt.hash(newPassword, 10);
+      await this.userService.updateProfile(payload.id, { password: hashed });
+      return { message: 'Mot de passe réinitialisé avec succès' };
+    } catch {
+      throw new BadRequestException('Token invalide ou expiré');
     }
   }
 }

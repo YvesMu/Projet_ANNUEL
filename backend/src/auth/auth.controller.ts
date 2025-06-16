@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Query, UseGuards, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -29,5 +29,16 @@ export class AuthController {
   @Get('me')
   getProfile(@CurrentUser() user: JwtPayload) {
     return user;
+  }
+
+  @Post('forgot-password')
+  forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Post('reset-password')
+  resetPassword(@Query('token') token: string, @Body('newPassword') newPassword: string) {
+    if (!newPassword) throw new BadRequestException('Mot de passe requis');
+    return this.authService.resetPassword(token, newPassword);
   }
 }

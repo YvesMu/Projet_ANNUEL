@@ -23,11 +23,14 @@ export default function Login() {
     setError(""); // reset l'erreur
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
 
       const data = await response.json();
 
@@ -37,13 +40,12 @@ export default function Login() {
 
       console.log("Connexion réussie :", data);
       alert("Connexion réussie !");
-      
+
       // Ici tu peux stocker le token en localStorage si besoin
       localStorage.setItem("token", data.token);
 
       // Rediriger sur une page après connexion
       router.push("/dashboard");
-      
     } catch (err: unknown) {
       console.error("Erreur lors de la connexion :", err);
       if (err instanceof Error) {
@@ -76,8 +78,21 @@ export default function Login() {
             onChange={handleChange}
             className="border p-2 rounded"
           />
+
+          <p className="text-center mt-4">
+            <a
+              href="/forgot-password"
+              className="text-blue-600 hover:underline"
+            >
+              Mot de passe oublié ?
+            </a>
+          </p>
+
           {error && <p className="text-red-500">{error}</p>}
-          <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          >
             Se connecter
           </button>
         </form>

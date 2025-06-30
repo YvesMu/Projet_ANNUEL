@@ -17,11 +17,20 @@ export class ChatService {
   ) {}
 
   async getConversations(userId: number) {
-    return this.conversationRepo.find({
+    const conversations = await this.conversationRepo.find({
       where: [{ sender: { id: userId } }, { recipient: { id: userId } }],
       relations: ['sender', 'recipient'],
       order: { id: 'DESC' },
     });
+
+    // Mapper les données pour correspondre au format attendu par le frontend
+    return conversations.map((conv) => ({
+      id: conv.id,
+      senderId: conv.sender.id,
+      recipientId: conv.recipient.id,
+      sender: conv.sender,
+      recipient: conv.recipient,
+    }));
   }
 
   async getMessages(conversationId: number, userId: number) {
@@ -34,11 +43,21 @@ export class ChatService {
       throw new ForbiddenException('Accès interdit à cette conversation');
     }
 
-    return this.messageRepo.find({
+    const messages = await this.messageRepo.find({
       where: { conversation: { id: conversationId } },
       relations: ['sender'],
       order: { createdAt: 'ASC' },
     });
+
+    // Mapper les données pour correspondre au format attendu par le frontend
+    return messages.map((message) => ({
+      id: message.id,
+      content: message.content,
+      createdAt: message.createdAt.toISOString(),
+      senderId: message.sender.id,
+      conversationId: conversationId,
+      sender: message.sender,
+    }));
   }
 
   async sendMessage(conversationId: number, userId: number, content: string) {

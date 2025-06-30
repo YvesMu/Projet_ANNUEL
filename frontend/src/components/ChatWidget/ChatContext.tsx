@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 export interface Message {
   id: number;
@@ -14,12 +14,15 @@ export interface Conversation {
   id: number;
   senderId: number;
   recipientId: number;
+  sender?: { id: number; nom: string; prenom: string };
+  recipient?: { id: number; nom: string; prenom: string };
 }
 
 export interface User {
   id: number;
   nom: string;
   prenom: string;
+  role?: string;
 }
 
 export interface ChatContextProps {
@@ -32,6 +35,7 @@ export interface ChatContextProps {
   selectConversation: (id: number) => void;
   conversations: Conversation[];
   users: User[];
+  startNewConversation: (recipientId: number) => Promise<void>;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -51,7 +55,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     if (!isOpen) setHasUnread(false);
   };
 
-  const selectConversation = async (id: number) => {
+  const selectConversation = useCallback(async (id: number) => {
     setSelectedConversationId(id);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/messages/${id}`, {
@@ -62,31 +66,31 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Erreur chargement messages:", error);
     }
-  };
+  }, [token]);
 
   const sendMessage = async (content: string) => {
-  if (!selectedConversationId) return;
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/chat/send/${selectedConversationId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ content }),
-      }
-    );
+    if (!selectedConversationId) return;
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/send/${selectedConversationId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ content }),
+        }
+      );
 
-    await res.json();
-    await selectConversation(selectedConversationId); // 🔄 recharge les messages après envoi
-  } catch (err) {
-    console.error("Erreur envoi message :", err);
-  }
-};
+      await res.json();
+      await selectConversation(selectedConversationId); // 🔄 recharge les messages après envoi
+    } catch (err) {
+      console.error("Erreur envoi message :", err);
+    }
+  };
 
-  const fetchConversations = async () => {
+  const fetchConversations = useCallback(async () => {
     if (!token) return;
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/conversations`, {
@@ -97,9 +101,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Erreur chargement conversations:", error);
     }
-  };
+  }, [token]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     if (!token) return;
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
@@ -110,14 +114,34 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Erreur chargement utilisateurs:", error);
     }
-  };
+  }, [token]);
+
+  const startNewConversation = useCallback(async (recipientId: number) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ recipientId }),
+      });
+
+      const newConversation = await res.json();
+      await fetchConversations(); // Recharge les conversations
+      setSelectedConversationId(newConversation.id); // Sélectionne la nouvelle conversation
+    } catch (error) {
+      console.error("Erreur création conversation:", error);
+    }
+  }, [token, fetchConversations]);
 
   useEffect(() => {
     if (isOpen) {
       fetchConversations();
       fetchUsers();
     }
-  }, [isOpen]);
+  }, [isOpen, fetchConversations, fetchUsers]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -126,7 +150,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       }
     }, 5000);
     return () => clearInterval(interval);
-  }, [selectedConversationId, isOpen]);
+  }, [selectedConversationId, isOpen, selectConversation]);
 
   return (
     <ChatContext.Provider
@@ -140,6 +164,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         selectConversation,
         conversations,
         users,
+        startNewConversation,
       }}
     >
       {children}

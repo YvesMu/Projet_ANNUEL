@@ -65,25 +65,26 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   };
 
   const sendMessage = async (content: string) => {
-    if (!selectedConversationId) return;
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/send/${selectedConversationId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ content }),
-        }
-      );
-      await res.json();
-      await selectConversation(selectedConversationId);
-    } catch (err) {
-      console.error("Erreur envoi message :", err);
-    }
-  };
+  if (!selectedConversationId) return;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/chat/send/${selectedConversationId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content }),
+      }
+    );
+
+    await res.json();
+    await selectConversation(selectedConversationId); // 🔄 recharge les messages après envoi
+  } catch (err) {
+    console.error("Erreur envoi message :", err);
+  }
+};
 
   const fetchConversations = async () => {
     if (!token) return;

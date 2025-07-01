@@ -1,5 +1,4 @@
 "use client";
-export const dynamic = "force-dynamic";
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -12,6 +11,17 @@ interface ChatMessage {
   timestamp: string;
 }
 
+interface CallInfo {
+  offre: {
+    titre: string;
+  };
+  candidat: {
+    prenom: string;
+    nom: string;
+  };
+  scheduledAt: string;
+}
+
 export default function VideoCallPage() {
   const { callId } = useParams();
   const router = useRouter();
@@ -22,6 +32,7 @@ export default function VideoCallPage() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [username, setUsername] = useState("Moi");
+  const [callInfo, setCallInfo] = useState<CallInfo | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -44,22 +55,31 @@ export default function VideoCallPage() {
 
     const joinCall = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/${callId}`, {
+        const res = await fetch(`http://localhost:5000/video-call/${callId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!res.ok) throw new Error("Impossible de récupérer la room");
 
-        const { roomUrl } = await res.json();
+        const data = await res.json();
+        
+        // Extraire les informations de l'appel
+        setCallInfo({
+          offre: data.offre || { titre: "Entretien" },
+          candidat: data.candidat || { prenom: "Candidat", nom: "Inconnu" },
+          scheduledAt: data.scheduledAt || new Date().toISOString(),
+        });
 
-        // 💡 Toujours détruire toute instance précédente (par sécurité)
+        const roomUrl = data.roomUrl;
+
+        // Toujours détruire toute instance précédente
         if (callFrameRef.current) {
           callFrameRef.current.leave();
           callFrameRef.current.destroy();
           callFrameRef.current = null;
         }
 
-        if (containerRef.current) {
+        if (containerRef.current && !DailyIframe.getCallInstance()) {
           const frame = DailyIframe.createFrame(containerRef.current, {
             iframeStyle: {
               width: "100%",
@@ -74,7 +94,7 @@ export default function VideoCallPage() {
           frame.on("left-meeting", () => router.push("/dashboard"));
 
           frame.on("app-message", (event) => {
-            console.log("📥 Message reçu complet :", JSON.stringify(event, null, 2)); // ✅ pour debug
+            console.log("📥 Message reçu complet :", JSON.stringify(event, null, 2));
 
             const { data } = event;
             if (data.type === "chat") {
@@ -122,11 +142,7 @@ export default function VideoCallPage() {
       name: username,
     };
 
-    console.log("📤 Envoi du message :", {
-      type: "chat",
-      text: newMessage,
-      name: username,
-    });
+    console.log("📤 Envoi du message :", message);
     callFrameRef.current?.sendAppMessage(message);
 
     setChatMessages((prev) => [
@@ -226,17 +242,70 @@ export default function VideoCallPage() {
                 </div>
               )}
 
-              {/* Interface vidéo */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-100 p-6">
-                <div
-                  ref={containerRef}
-                  className="w-full h-[75vh] bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-inner overflow-hidden relative"
-                >
-                  {/* Overlay de chargement si nécessaire */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900/20 rounded-xl">
-                    <div className="text-white/60 text-center">
-                      <div className="text-6xl mb-4">📹</div>
-                      <p className="text-lg">Interface vidéo</p>
+              {/* Layout principal avec vidéo et chat */}
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                {/* Interface vidéo */}
+                <div className="lg:col-span-3">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-100 p-6">
+                    <div
+                      ref={containerRef}
+                      className="w-full h-[70vh] bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-inner overflow-hidden relative"
+                    >
+                      {/* Overlay de chargement si nécessaire */}
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-900/20 rounded-xl">
+                        <div className="text-white/60 text-center">
+                          <div className="text-6xl mb-4">📹</div>
+                          <p className="text-lg">Interface vidéo</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Chat */}
+                <div className="lg:col-span-1">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-100 p-6 h-[70vh] flex flex-col">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                      <span className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                        💬
+                      </span>
+                      Chat
+                    </h3>
+                    
+                    {/* Messages */}
+                    <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+                      {chatMessages.map((msg, index) => (
+                        <div
+                          key={index}
+                          className={`p-3 rounded-xl ${
+                            msg.sender === username
+                              ? "bg-blue-500 text-white ml-4"
+                              : "bg-gray-100 text-gray-900 mr-4"
+                          }`}
+                        >
+                          <div className="font-medium text-sm">{msg.sender}</div>
+                          <div className="text-sm">{msg.text}</div>
+                          <div className="text-xs opacity-70 mt-1">{msg.timestamp}</div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Input message */}
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                        placeholder="Tapez votre message..."
+                        className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      />
+                      <button
+                        onClick={sendMessage}
+                        className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300"
+                      >
+                        Envoyer
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -3,15 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
     "build": "next build",
+    "dev": "next dev --turbopack",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@daily-co/daily-js": "^0.79.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.515.0",
     "next": "^15.3.3",
     "react": "^19.0.0",
+    "react-big-calendar": "^1.19.2",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
@@ -19,6 +22,7 @@
     "@tailwindcss/postcss": "^4.1.4",
     "@types/node": "^20",
     "@types/react": "^19",
+    "@types/react-big-calendar": "^1.16.2",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",

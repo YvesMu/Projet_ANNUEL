@@ -1,23 +1,27 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import DailyIframe, { DailyCall } from "@daily-co/daily-js";
 import Header from "@/components/Header";
 
+interface ChatMessage {
+  sender: string;
+  text: string;
+  timestamp: string;
+}
+
 export default function VideoCallPage() {
   const { callId } = useParams();
   const router = useRouter();
-
   const containerRef = useRef<HTMLDivElement>(null);
   const callFrameRef = useRef<DailyCall | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  const [callInfo, setCallInfo] = useState<{
-    offre: { titre: string };
-    candidat: { prenom: string; nom: string };
-    scheduledAt: string;
-  } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [username, setUsername] = useState("Moi");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,25 +30,37 @@ export default function VideoCallPage() {
       return;
     }
 
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      console.log("Payload JWT:", payload);
+      if (payload?.prenom && payload?.nom) {
+        setUsername(`${payload.prenom} ${payload.nom}`);
+      } else if (payload?.prenom) {
+        setUsername(payload.prenom);
+      }
+    } catch (err) {
+      console.error("Erreur lors du décodage du token JWT :", err);
+    }
+
     const joinCall = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/video-call/${callId}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/${callId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!res.ok) throw new Error("Impossible de récupérer la room");
 
-        const data = await res.json();
-        setCallInfo({
-          offre: data.offre,
-          candidat: data.candidat,
-          scheduledAt: data.scheduledAt,
-        });
+        const { roomUrl } = await res.json();
 
-        const roomUrl = data.roomUrl;
+        // 💡 Toujours détruire toute instance précédente (par sécurité)
+        if (callFrameRef.current) {
+          callFrameRef.current.leave();
+          callFrameRef.current.destroy();
+          callFrameRef.current = null;
+        }
 
-        if (!callFrameRef.current && containerRef.current && !DailyIframe.getCallInstance()) {
-          const callFrame = DailyIframe.createFrame(containerRef.current, {
+        if (containerRef.current) {
+          const frame = DailyIframe.createFrame(containerRef.current, {
             iframeStyle: {
               width: "100%",
               height: "100%",
@@ -54,13 +70,31 @@ export default function VideoCallPage() {
             showLeaveButton: true,
           });
 
-          await callFrame.join({ url: roomUrl });
-          callFrame.on("left-meeting", () => router.push("/dashboard"));
+          await frame.join({ url: roomUrl });
+          frame.on("left-meeting", () => router.push("/dashboard"));
 
-          callFrameRef.current = callFrame;
+          frame.on("app-message", (event) => {
+            console.log("📥 Message reçu complet :", JSON.stringify(event, null, 2)); // ✅ pour debug
+
+            const { data } = event;
+            if (data.type === "chat") {
+              console.log("📥 Chat avec nom :", data.name);
+
+              setChatMessages((prev) => [
+                ...prev,
+                {
+                  sender: data.name || "Autre",
+                  text: data.text,
+                  timestamp: new Date().toLocaleTimeString(),
+                },
+              ]);
+            }
+          });
+
+          callFrameRef.current = frame;
         }
       } catch (err) {
-        console.error("Erreur lors de la connexion à la room :", err);
+        console.error("❌ Erreur join visio :", err);
         alert("Impossible de rejoindre l'appel vidéo.");
         router.push("/dashboard");
       } finally {
@@ -71,11 +105,41 @@ export default function VideoCallPage() {
     joinCall();
 
     return () => {
-      callFrameRef.current?.leave();
-      callFrameRef.current?.destroy();
-      callFrameRef.current = null;
+      if (callFrameRef.current) {
+        callFrameRef.current.leave();
+        callFrameRef.current.destroy();
+        callFrameRef.current = null;
+      }
     };
   }, [callId, router]);
+
+  const sendMessage = () => {
+    if (!newMessage.trim()) return;
+
+    const message = {
+      type: "chat",
+      text: newMessage,
+      name: username,
+    };
+
+    console.log("📤 Envoi du message :", {
+      type: "chat",
+      text: newMessage,
+      name: username,
+    });
+    callFrameRef.current?.sendAppMessage(message);
+
+    setChatMessages((prev) => [
+      ...prev,
+      {
+        sender: username,
+        text: newMessage,
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
+
+    setNewMessage("");
+  };
 
   return (
     <>

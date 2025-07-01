@@ -27,7 +27,7 @@ export default function ProfilePage() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch("http://localhost:5000/user/profile", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -43,7 +43,7 @@ export default function ProfilePage() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    await fetch("http://localhost:5000/user/profile", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -78,7 +78,7 @@ export default function ProfilePage() {
     setUploading(true);
 
     try {
-      await fetch(`http://localhost:5000/user/upload/${type}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/upload/${type}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

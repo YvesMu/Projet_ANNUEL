@@ -40,7 +40,7 @@ export default function CreateOffer() {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/offres", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

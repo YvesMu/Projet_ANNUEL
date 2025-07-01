@@ -17,12 +17,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly config: ConfigService,
+  ) {}
 
-  // Partie déjà existante ✅
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async updateProfile(
@@ -30,9 +33,7 @@ export class UserController {
     @Req() req: Request & { user?: CustomJwtPayload },
   ) {
     const userId = req.user?.id;
-    if (!userId) {
-      throw new Error('User ID is missing or invalid');
-    }
+    if (!userId) throw new Error('User ID is missing or invalid');
     return this.userService.updateProfile(userId, update);
   }
 
@@ -40,13 +41,10 @@ export class UserController {
   @Get('profile')
   async getProfile(@Req() req: Request & { user?: CustomJwtPayload }) {
     const userId = req.user?.id;
-    if (!userId) {
-      throw new Error('User ID is missing or invalid');
-    }
+    if (!userId) throw new Error('User ID is missing or invalid');
     return this.userService.findById(userId);
   }
 
-  // ✅ Nouvelle route d'upload pour la photo
   @UseGuards(JwtAuthGuard)
   @Put('upload/photo')
   @UseInterceptors(
@@ -70,15 +68,15 @@ export class UserController {
     @Req() req: Request & { user?: CustomJwtPayload },
   ) {
     if (!file) throw new BadRequestException('Aucun fichier fourni');
-    const photoUrl = `http://localhost:5000/uploads/profile/${file.filename}`;
+
+    const backendUrl = this.config.get<string>('BACKEND_URL');
+    const photoUrl = `${backendUrl}/uploads/profile/${file.filename}`;
+
     const userId = req.user?.id;
-    if (typeof userId !== 'number') {
-      throw new Error('User ID is missing or invalid');
-    }
+    if (typeof userId !== 'number') throw new Error('User ID is missing or invalid');
     return this.userService.updateProfile(userId, { photoUrl });
   }
 
-  // ✅ Nouvelle route d'upload pour le CV
   @UseGuards(JwtAuthGuard)
   @Put('upload/cv')
   @UseInterceptors(
@@ -102,11 +100,12 @@ export class UserController {
     @Req() req: Request & { user?: CustomJwtPayload },
   ) {
     if (!file) throw new BadRequestException('Aucun fichier fourni');
-    const cvUrl = `http://localhost:5000/uploads/cv/${file.filename}`;
+
+    const backendUrl = this.config.get<string>('BACKEND_URL');
+    const cvUrl = `${backendUrl}/uploads/cv/${file.filename}`;
+
     const userId = req.user?.id;
-    if (typeof userId !== 'number') {
-      throw new Error('User ID is missing or invalid');
-    }
+    if (typeof userId !== 'number') throw new Error('User ID is missing or invalid');
     return this.userService.updateProfile(userId, { cvUrl });
   }
 
@@ -114,5 +113,11 @@ export class UserController {
   @Get('candidats')
   async getCandidats() {
     return this.userService.getAllCandidats();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getAllUsers() {
+    return this.userService.findAllUsers();
   }
 }

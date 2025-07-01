@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -27,7 +28,7 @@ export default function EditOfferPage() {
       return;
     }
 
-    fetch(`http://localhost:5000/offres/${offerId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/${offerId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -59,7 +60,7 @@ export default function EditOfferPage() {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/offres/${offerId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/${offerId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

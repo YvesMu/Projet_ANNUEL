@@ -26,11 +26,14 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
 
       const data = await response.json();
 
@@ -39,13 +42,12 @@ export default function Login() {
       }
 
       console.log("Connexion réussie :", data);
-      
+
       // Stocker le token en localStorage
       localStorage.setItem("token", data.token);
 
       // Rediriger sur le dashboard
       router.push("/dashboard");
-      
     } catch (err: unknown) {
       console.error("Erreur lors de la connexion :", err);
       if (err instanceof Error) {

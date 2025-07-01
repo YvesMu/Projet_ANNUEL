@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
@@ -24,7 +25,7 @@ export default function OffresPage() {
   const [selectedDomain, setSelectedDomain] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/offres")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres`)
       .then(async (res) => {
         if (!res.ok) {
           console.error("Erreur HTTP:", res.status);

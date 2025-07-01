@@ -50,34 +50,27 @@ export default function Header() {
               Offres
             </Link>
 
-            {isAuthenticated && (
+        {isAuthenticated && (
+          <>
+            <Link href="/profile" className="hover:underline">Mon Profil</Link>
+            <Link href="/dashboard" className="hover:underline">Dashboard</Link>
+            <Link href="/mes-visios" className="hover:underline">Mes Visios</Link>
+            {isProfessional && (
               <>
-                <Link href="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300 hover:scale-105">
-                  Mon Profil
-                </Link>
-                <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300 hover:scale-105">
-                  Dashboard
-                </Link>
-                <Link href="/mes-visios" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300 hover:scale-105">
-                  Mes Visios
-                </Link>
-                {isProfessional && (
-                  <>
-                    <Link href="/create-offer" className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
-                      Créer une offre
-                    </Link>
-                    <Link href="/planifier-visio" className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
-                      Planifier un appel
-                    </Link>
-                  </>
-                )}
-                <button 
-                  onClick={handleLogout} 
-                  className="px-4 py-2 text-gray-700 hover:text-red-600 font-medium border border-gray-300 rounded-lg hover:border-red-300 hover:bg-red-50 transition-all duration-300"
-                >
-                  Déconnexion
-                </button>
+              <Link href="/create-offer" className="hover:underline font-semibold">
+                Créer une offre
+              </Link>
+              
+              <Link href="/planifier-visio" className="hover:underline font-semibold">
+                Planifier un appel
+              </Link>
+
+              <Link href="/mes-visios" className="hover:underline">Mes Visios</Link>
               </>
+              
+              <Link href="/calendrier" className="hover:underline font-semibold">
+                Mon Calendrier
+              </Link>
             )}
 
             {!isAuthenticated && (

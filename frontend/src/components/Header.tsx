@@ -50,30 +50,40 @@ export default function Header() {
               Offres
             </Link>
 
-        {isAuthenticated && (
-          <>
-            <Link href="/profile" className="hover:underline">Mon Profil</Link>
-            <Link href="/dashboard" className="hover:underline">Dashboard</Link>
-            <Link href="/mes-visios" className="hover:underline">Mes Visios</Link>
-            {isProfessional && (
+            {isAuthenticated ? (
               <>
-              <Link href="/create-offer" className="hover:underline font-semibold">
-                Créer une offre
-              </Link>
-              
-              <Link href="/planifier-visio" className="hover:underline font-semibold">
-                Planifier un appel
-              </Link>
+                <Link href="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300 hover:scale-105">
+                  Mon Profil
+                </Link>
+                <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300 hover:scale-105">
+                  Dashboard
+                </Link>
+                <Link href="/mes-visios" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300 hover:scale-105">
+                  Mes Visios
+                </Link>
+                
+                {isProfessional && (
+                  <>
+                    <Link href="/create-offer" className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
+                      Créer une offre
+                    </Link>
+                    <Link href="/planifier-visio" className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
+                      Planifier un appel
+                    </Link>
+                    <Link href="/calendrier" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300 hover:scale-105">
+                      Mon Calendrier
+                    </Link>
+                  </>
+                )}
 
-              <Link href="/mes-visios" className="hover:underline">Mes Visios</Link>
+                <button 
+                  onClick={handleLogout} 
+                  className="px-4 py-2 text-gray-700 hover:text-red-600 font-medium border border-gray-300 rounded-lg hover:border-red-300 hover:bg-red-50 transition-all duration-300"
+                >
+                  Déconnexion
+                </button>
               </>
-              
-              <Link href="/calendrier" className="hover:underline font-semibold">
-                Mon Calendrier
-              </Link>
-            )}
-
-            {!isAuthenticated && (
+            ) : (
               <div className="flex items-center gap-4">
                 <Link href="/login" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-300">
                   Connexion
@@ -108,7 +118,7 @@ export default function Header() {
               Offres
             </Link>
 
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <>
                 <div className="border-t border-gray-200 pt-4">
                   <Link href="/profile" className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300">
@@ -121,6 +131,7 @@ export default function Header() {
                     Mes Visios
                   </Link>
                 </div>
+                
                 {isProfessional && (
                   <div className="border-t border-gray-200 pt-4 space-y-3">
                     <Link href="/create-offer" className="block w-full text-center px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300">
@@ -129,8 +140,12 @@ export default function Header() {
                     <Link href="/planifier-visio" className="block w-full text-center px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300">
                       Planifier un appel
                     </Link>
+                    <Link href="/calendrier" className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300">
+                      Mon Calendrier
+                    </Link>
                   </div>
                 )}
+                
                 <div className="border-t border-gray-200 pt-4">
                   <button 
                     onClick={handleLogout} 
@@ -140,9 +155,7 @@ export default function Header() {
                   </button>
                 </div>
               </>
-            )}
-
-            {!isAuthenticated && (
+            ) : (
               <div className="border-t border-gray-200 pt-4 space-y-3">
                 <Link href="/login" className="block w-full text-center px-4 py-2 text-gray-700 hover:text-blue-600 font-medium border border-gray-300 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-300">
                   Connexion

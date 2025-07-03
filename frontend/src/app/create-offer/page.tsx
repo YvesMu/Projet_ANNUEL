@@ -29,6 +29,12 @@ export default function CreateOffer() {
     typeContrat: "",
     lieu: "",
     salaire: "",
+    experience: "",
+    niveauEtude: "",
+    horaires: "",
+    avantages: [],
+    competences: [],
+    dateDebut: "",
   });
 
   useEffect(() => {
@@ -44,6 +50,13 @@ export default function CreateOffer() {
     >
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleListInput = (field: 'avantages' | 'competences', value: string) => {
+    if (!value.trim()) return;
+    
+    const items = value.split(',').map(item => item.trim()).filter(item => item);
+    setForm({ ...form, [field]: items });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -81,9 +94,9 @@ export default function CreateOffer() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center justify-center min-h-screen">
+      <main className="flex flex-col items-center justify-center min-h-screen p-8">
         <h1 className="text-3xl font-bold mb-6">Créer une offre</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-96">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-2xl">
           <input
             name="titre"
             placeholder="Titre"
@@ -154,6 +167,83 @@ export default function CreateOffer() {
             onChange={handleChange}
             className="border p-2 rounded"
           />
+
+          {/* Champs avancés */}
+          <select
+            name="experience"
+            value={form.experience}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="">Expérience requise</option>
+            <option value="Débutant">Débutant (0-1 ans)</option>
+            <option value="Junior">Junior (1-3 ans)</option>
+            <option value="Confirmé">Confirmé (3-5 ans)</option>
+            <option value="Senior">Senior (5+ ans)</option>
+            <option value="Expert">Expert (10+ ans)</option>
+          </select>
+
+          <select
+            name="niveauEtude"
+            value={form.niveauEtude}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="">Niveau d&apos;étude</option>
+            <option value="Sans diplôme">Sans diplôme</option>
+            <option value="CAP/BEP">CAP/BEP</option>
+            <option value="Bac">Bac</option>
+            <option value="Bac+2">Bac+2 (BTS/DUT)</option>
+            <option value="Bac+3">Bac+3 (Licence)</option>
+            <option value="Bac+5">Bac+5 (Master)</option>
+            <option value="Bac+8">Bac+8 (Doctorat)</option>
+          </select>
+
+          <input
+            name="horaires"
+            placeholder="Horaires (ex: 35h/semaine, 9h-17h)"
+            value={form.horaires}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          />
+
+          <input
+            name="dateDebut"
+            type="date"
+            placeholder="Date de début"
+            value={form.dateDebut}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          />
+
+          <div>
+            <label className="block mb-2 font-semibold">Avantages (séparés par des virgules)</label>
+            <input
+              placeholder="Ex: Télétravail, Tickets restaurant, Mutuelle"
+              onChange={(e) => handleListInput('avantages', e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+            {form.avantages.length > 0 && (
+              <div className="mt-2 text-sm text-gray-600">
+                Avantages: {form.avantages.join(', ')}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block mb-2 font-semibold">Compétences requises (séparées par des virgules)</label>
+            <input
+              placeholder="Ex: JavaScript, React, Node.js"
+              onChange={(e) => handleListInput('competences', e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+            {form.competences.length > 0 && (
+              <div className="mt-2 text-sm text-gray-600">
+                Compétences: {form.competences.join(', ')}
+              </div>
+            )}
+          </div>
+
           <button
             type="submit"
             className="bg-green-600 text-white p-2 rounded hover:bg-green-700"

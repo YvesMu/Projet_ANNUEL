@@ -15,7 +15,8 @@
     "next": "^15.3.3",
     "react": "^19.0.0",
     "react-big-calendar": "^1.19.2",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "unrs-resolver": "^1.9.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

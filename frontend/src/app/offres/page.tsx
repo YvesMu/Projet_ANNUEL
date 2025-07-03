@@ -200,9 +200,9 @@ export default function OffresPage() {
                   </span>{" "}
                   offre{filtered.length > 1 ? "s" : ""} trouvée
                   {filtered.length > 1 ? "s" : ""}
-                  {search && <span> pour "{search}"</span>}
+                  {search && <span> pour &ldquo;{search}&rdquo;</span>}
                   {selectedDomain && (
-                    <span> dans le domaine "{selectedDomain}"</span>
+                    <span> dans le domaine &ldquo;{selectedDomain}&rdquo;</span>
                   )}
                 </p>
               </div>
@@ -284,7 +284,7 @@ export default function OffresPage() {
                   </h2>
                   <p className="text-gray-600 mb-8">
                     Essayez de modifier vos critères de recherche ou explorez
-                    d'autres domaines
+                    d&apos;autres domaines
                   </p>
                   <button
                     onClick={() => {

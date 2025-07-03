@@ -4,4 +4,5 @@ export interface JwtPayload {
   role: 'particulier' | 'professionnel';
   prenom: string;
   nom: string;
+  domaine?: string;
 }

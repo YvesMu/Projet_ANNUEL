@@ -15,13 +15,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: JwtPayload): Partial<CustomJwtPayload> {
+  validate(payload: JwtPayload): CustomJwtPayload {
     return {
       id: payload.id,
       email: payload.email,
       role: payload.role,
       nom: payload.nom,
       prenom: payload.prenom,
+      domaine: payload.domaine || '',
     };
   }
 }

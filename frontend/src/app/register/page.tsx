@@ -11,7 +11,7 @@ export default function Register() {
     password: "",
     role: "particulier", // soit particulier, soit professionnel
     typeOffre: "emploi",
-    domaine: "informatique",
+    domaine: "", // L'utilisateur doit choisir son domaine
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -81,6 +81,41 @@ export default function Register() {
           >
             <option value="particulier">Particulier</option>
             <option value="professionnel">Professionnel</option>
+          </select>
+
+          {/* Nouveau select pour choisir le domaine de spécialisation */}
+          <select
+            name="domaine"
+            value={form.domaine}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="">Sélectionnez votre domaine</option>
+            <option value="Développement">Développement / Informatique</option>
+            <option value="Design">Design / Graphisme</option>
+            <option value="Marketing">Marketing / Communication</option>
+            <option value="Ressources Humaines">Ressources Humaines</option>
+            <option value="Finance">Finance / Comptabilité</option>
+            <option value="Commercial">Commercial / Ventes</option>
+            <option value="Juridique">Juridique</option>
+            <option value="Santé">Santé / Médical</option>
+            <option value="Éducation">Éducation / Formation</option>
+            <option value="Ingénierie">Ingénierie</option>
+            <option value="Production">Production / Logistique</option>
+            <option value="Autre">Autre</option>
+          </select>
+
+          {/* Select pour le type d'offre */}
+          <select
+            name="typeOffre"
+            value={form.typeOffre}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="emploi">Emploi</option>
+            <option value="stage">Stage</option>
+            <option value="freelance">Freelance</option>
+            <option value="alternance">Alternance</option>
           </select>
 
           <button

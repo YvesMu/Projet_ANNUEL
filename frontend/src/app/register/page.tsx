@@ -109,51 +109,73 @@ export default function Register() {
                 />
               </div>
 
-          {/* Nouveau select pour choisir le rôle */}
-          <select
-            name="role"
-            value={form.role}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="particulier">Particulier</option>
-            <option value="professionnel">Professionnel</option>
-          </select>
+              {/* Rôle */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Type de profil</label>
+                <select
+                  name="role"
+                  value={form.role}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm appearance-none bg-no-repeat bg-right-3 bg-[length:16px] cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`
+                  }}
+                >
+                  <option value="particulier">🧑‍💼 Particulier - Recherche d'emploi</option>
+                  <option value="professionnel">🏢 Professionnel - Recruteur</option>
+                </select>
+              </div>
 
-          {/* Nouveau select pour choisir le domaine de spécialisation */}
-          <select
-            name="domaine"
-            value={form.domaine}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="">Sélectionnez votre domaine</option>
-            <option value="Développement">Développement / Informatique</option>
-            <option value="Design">Design / Graphisme</option>
-            <option value="Marketing">Marketing / Communication</option>
-            <option value="Ressources Humaines">Ressources Humaines</option>
-            <option value="Finance">Finance / Comptabilité</option>
-            <option value="Commercial">Commercial / Ventes</option>
-            <option value="Juridique">Juridique</option>
-            <option value="Santé">Santé / Médical</option>
-            <option value="Éducation">Éducation / Formation</option>
-            <option value="Ingénierie">Ingénierie</option>
-            <option value="Production">Production / Logistique</option>
-            <option value="Autre">Autre</option>
-          </select>
+              {/* Domaine et Type d'offre côte à côte */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Domaine de spécialisation */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Domaine d'expertise</label>
+                  <select
+                    name="domaine"
+                    value={form.domaine}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm appearance-none bg-no-repeat bg-right-3 bg-[length:16px] cursor-pointer"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`
+                    }}
+                    required
+                  >
+                    <option value="">Sélectionnez votre domaine</option>
+                    <option value="Développement">💻 Développement / Informatique</option>
+                    <option value="Design">🎨 Design / Graphisme</option>
+                    <option value="Marketing">📱 Marketing / Communication</option>
+                    <option value="Ressources Humaines">👥 Ressources Humaines</option>
+                    <option value="Finance">💰 Finance / Comptabilité</option>
+                    <option value="Commercial">🤝 Commercial / Ventes</option>
+                    <option value="Juridique">⚖️ Juridique</option>
+                    <option value="Santé">🏥 Santé / Médical</option>
+                    <option value="Éducation">📚 Éducation / Formation</option>
+                    <option value="Ingénierie">⚙️ Ingénierie</option>
+                    <option value="Production">🚚 Production / Logistique</option>
+                    <option value="Autre">🔧 Autre</option>
+                  </select>
+                </div>
 
-          {/* Select pour le type d'offre */}
-          <select
-            name="typeOffre"
-            value={form.typeOffre}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="emploi">Emploi</option>
-            <option value="stage">Stage</option>
-            <option value="freelance">Freelance</option>
-            <option value="alternance">Alternance</option>
-          </select>
+                {/* Type d'offre */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Type recherché</label>
+                  <select
+                    name="typeOffre"
+                    value={form.typeOffre}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm appearance-none bg-no-repeat bg-right-3 bg-[length:16px] cursor-pointer"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`
+                    }}
+                  >
+                    <option value="emploi">💼 Emploi</option>
+                    <option value="stage">🎓 Stage</option>
+                    <option value="freelance">💡 Freelance</option>
+                    <option value="alternance">🔄 Alternance</option>
+                  </select>
+                </div>
+              </div>
 
               {/* Bouton d'inscription */}
               <button
@@ -179,25 +201,51 @@ export default function Register() {
           </div>
 
           {/* Avantages de l'inscription */}
-          <div className="mt-8 text-center">
-            <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                  ✨
+          <div className="mt-8">
+            <h3 className="text-center text-lg font-semibold text-gray-800 mb-6">
+              Pourquoi nous rejoindre ?
+            </h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="group text-center transition-all duration-300 hover:scale-105">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:rotate-6 transition-transform duration-300 shadow-lg">
+                  <span className="text-2xl">✨</span>
                 </div>
-                <span>Gratuit</span>
+                <h4 className="font-semibold text-gray-800 mb-1">100% Gratuit</h4>
+                <p className="text-xs text-gray-600">Inscription et utilisation gratuites</p>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
-                  🔒
+              
+              <div className="group text-center transition-all duration-300 hover:scale-105">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:rotate-6 transition-transform duration-300 shadow-lg">
+                  <span className="text-2xl">🔒</span>
                 </div>
-                <span>Sécurisé</span>
+                <h4 className="font-semibold text-gray-800 mb-1">Sécurisé</h4>
+                <p className="text-xs text-gray-600">Vos données sont protégées</p>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-                  ⚡
+              
+              <div className="group text-center transition-all duration-300 hover:scale-105">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:rotate-6 transition-transform duration-300 shadow-lg">
+                  <span className="text-2xl">⚡</span>
                 </div>
-                <span>Rapide</span>
+                <h4 className="font-semibold text-gray-800 mb-1">Instantané</h4>
+                <p className="text-xs text-gray-600">Accès immédiat après inscription</p>
+              </div>
+            </div>
+            
+            {/* Statistiques supplémentaires */}
+            <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-blue-600 mb-1">25K+</div>
+                  <div className="text-xs text-gray-600">Offres disponibles</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-indigo-600 mb-1">15K+</div>
+                  <div className="text-xs text-gray-600">Entreprises partenaires</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-purple-600 mb-1">85%</div>
+                  <div className="text-xs text-gray-600">Taux de réussite</div>
+                </div>
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function EditOfferPage() {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function EditOfferPage() {
       });
   }, [offerId, router]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -236,6 +237,7 @@ export default function EditOfferPage() {
           </button>
         </form>
       </main>
+      <Footer />
     </>
   );
 }

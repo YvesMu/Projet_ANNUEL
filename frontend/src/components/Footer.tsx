@@ -102,6 +102,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <Link href="/rgpd" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
+                  🛡️ Protection des données (RGPD)
+                </Link>
+              </li>
+              <li>
                 <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
                   🔒 Confidentialité
                 </a>
@@ -146,6 +151,9 @@ export default function Footer() {
                 <a href="#" className="hover:text-white transition-colors duration-300">
                   Mentions légales
                 </a>
+                <Link href="/rgpd" className="hover:text-white transition-colors duration-300">
+                  RGPD
+                </Link>
                 <a href="#" className="hover:text-white transition-colors duration-300">
                   Cookies
                 </a>

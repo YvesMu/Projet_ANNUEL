@@ -80,4 +80,27 @@ export class OffreController {
   async finAllCandidats() {
     return this.offreService.getAllCandidats();
   }
+
+  // ✅ PARTICULIER : récupérer les offres recommandées selon le domaine
+  @Get('recommended')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('particulier')
+  async getRecommendedOffers(@CurrentUser() user: CustomJwtPayload) {
+    // On doit récupérer les infos complètes de l'utilisateur pour avoir son domaine
+    if (!user.domaine) {
+      throw new Error('Domaine utilisateur non défini');
+    }
+    return this.offreService.findRecommendedOffers(user.domaine);
+  }
+
+  // ✅ PARTICULIER : récupérer uniquement les offres de mon domaine
+  @Get('my-domain')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('particulier')
+  async getOffersByMyDomain(@CurrentUser() user: CustomJwtPayload) {
+    if (!user.domaine) {
+      throw new Error('Domaine utilisateur non défini');
+    }
+    return this.offreService.findByUserDomain(user.domaine);
+  }
 }

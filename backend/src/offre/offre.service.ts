@@ -67,4 +67,39 @@ export class OffreService {
       relations: ['postulations', 'postulations.candidat', 'auteur'],
     });
   }
+
+  // Nouvelle méthode : récupérer les offres filtrées par domaine d'utilisateur
+  async findByUserDomain(userDomain: string): Promise<Offre[]> {
+    return this.offreRepository.find({
+      where: { domaine: userDomain },
+      relations: ['auteur'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // Récupérer toutes les offres pour un utilisateur particulier avec priorité sur son domaine
+  async findRecommendedOffers(userDomain: string): Promise<{
+    recommendedOffers: Offre[];
+    otherOffers: Offre[];
+  }> {
+    // Offres du domaine de l'utilisateur
+    const recommendedOffers = await this.offreRepository.find({
+      where: { domaine: userDomain },
+      relations: ['auteur'],
+      order: { createdAt: 'DESC' },
+    });
+
+    // Autres offres (domaines différents)
+    const otherOffers = await this.offreRepository
+      .createQueryBuilder('offre')
+      .leftJoinAndSelect('offre.auteur', 'auteur')
+      .where('offre.domaine != :userDomain', { userDomain })
+      .orderBy('offre.createdAt', 'DESC')
+      .getMany();
+
+    return {
+      recommendedOffers,
+      otherOffers,
+    };
+  }
 }

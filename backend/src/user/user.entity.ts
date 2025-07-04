@@ -1,6 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
 import { Offre } from '../offre/offre.entity';
 import { Postulation } from '../postulation/postulation.entity';
+import { Conversation } from '../conversation/conversation.entity';
+import { Message } from '../message/message.entity';
 
 @Entity()
 export class User {
@@ -48,4 +50,13 @@ export class User {
 
   @Column({ nullable: true })
   presentation: string;
+
+  @OneToMany(() => Conversation, (conv) => conv.sender)
+  conversationsAsSender: Conversation[];
+
+  @OneToMany(() => Conversation, (conv) => conv.recipient)
+  conversationsAsRecipient: Conversation[];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  messages: Message[];
 }

@@ -46,3 +46,9 @@
 **/npm-debug.log*
 **/yarn-debug.log*
 **/yarn-error.log*
+
+
+# Secrets Kubernetes
+k8s/secrets/secrets.yaml
+k8s/secrets/secrets.yaml
+k8s/secrets/secrets.yaml

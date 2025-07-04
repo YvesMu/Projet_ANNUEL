@@ -1,4 +1,11 @@
-# Projet Annuel - Plateforme de Recrutement (Professionnel / Particulier)
+# 🎯 Projet Annuel - Plateforme de Recrutement (Professionnel / Particulier)
+
+---
+
+## 👨‍💻 Auteurs
+
+* **OUAHABI Ibrahim** — [GitHub: Narutino10](https://github.com/Narutino10)
+* **MU Yves** — [GitHub: YvesMu](https://github.com/YvesMu)
 
 ---
 
@@ -6,53 +13,57 @@
 
 * **Backend** : NestJS (TypeScript, JWT, TypeORM, PostgreSQL, Mailer)
 * **Frontend** : Next.js (React, TypeScript)
-* **Base de données** : PostgreSQL (via Docker)
+* **Base de données** : PostgreSQL (via Docker / Kubernetes)
 * **Authentification** : JWT (Inscription avec confirmation par email)
 * **Gestion des rôles** : Professionnel et Particulier
-* **Mailer** : SMTP (Gmail) pour les mails de confirmation et de changement de statut
+* **Mailer** : SMTP (Gmail) pour les mails de confirmation et de notification
+* **Vidéo & Chat** : API Daily.co
+* **Calendrier** : React Big Calendar
+* **Déploiement local** : Docker & Kubernetes (clusterisation, secrets, volumes)
 
 ---
 
-## 🚀 Fonctionnalités actuellement en place
+## Ὠ0 Fonctionnalités en place
 
-### Authentification & Sécurité
+### 🔐 Authentification & Sécurité
 
 * ✅ Inscription utilisateur (Particulier & Professionnel)
-* ✅ Confirmation d'email à l'inscription (avec lien envoyé par mail)
+* ✅ Confirmation d'email à l'inscription (via Gmail SMTP)
 * ✅ Connexion sécurisée via JWT
 * ✅ Middleware & Guards d’autorisation basés sur les rôles
 
-### Gestion des Offres (Professionnel)
+### 💼 Gestion des Offres (Professionnel)
 
-* ✅ Création d’offres (exclusif aux professionnels)
-* ✅ Modification & Suppression des offres créées
-* ✅ Liste des offres créées avec accès rapide aux candidatures
-* ✅ Gestion des candidatures liées à chaque offre
+* ✅ Création, modification et suppression d’offres
+* ✅ Liste des offres créées avec visualisation des candidatures
 
-### Candidature (Particulier)
+### 📄 Candidature (Particulier)
 
-* ✅ Visualisation de toutes les offres disponibles
-* ✅ Postuler à une offre
-* ✅ Visualisation de ses propres candidatures depuis le dashboard candidat
-* ✅ Statut de candidature affiché (En attente, Entretien, Retenue, Accepté, Refusé)
-* ✅ Badge dynamique de statut dans le dashboard candidat
+* ✅ Visualisation et candidature à toutes les offres
+* ✅ Suivi de ses candidatures depuis le dashboard
+* ✅ Statut dynamique : En attente, Entretien, Retenue, Accepté, Refusé
 
-### Gestion des Candidatures (Professionnel)
+### 👥 Gestion des Candidatures (Professionnel)
 
-* ✅ Visualisation de l'ensemble des candidatures reçues
-* ✅ Modification du statut des candidatures (avec sélecteur dynamique)
-* ✅ Affichage des informations complètes sur chaque candidat
-* ✅ Upload de CV et photo (déjà intégrable)
+* ✅ Liste des candidatures reçues
+* ✅ Modification des statuts avec mise à jour visuelle
+* ✅ Visualisation complète des infos candidat
+* ✅ Upload de CV et photo (support intégré)
 
-### Mails Automatisés
+### ✉️ Mails Automatisés
 
-* ✅ Envoi d'email de confirmation d'inscription
-* ✅ Envoi d'email automatique lorsqu’un professionnel change le statut d'une candidature
+* ✅ Confirmation d’inscription
+* ✅ Notification de changement de statut de candidature
+* ✅ Notification et rappel automatique des appels visio
+* ✅ URL dynamique personnalisée (ex : `http://localhost:31000/confirm-account?...`)
 
+### 📹 Visio
 
-### Visio 
-* ✅ Appelle Visio 
-
+* ✅ Appel visio intégré avec Daily.co
+* ✅ Chat intégré pendant la visio
+* ✅ Emails de rappel 5 min avant la visio
+* ✅ Planification depuis un calendrier interactif
+* ✅ Filtrage et accès aux visios planifiées
 
 ---
 
@@ -61,6 +72,8 @@
 * Node.js >= 18
 * NPM >= 9
 * Docker (pour PostgreSQL)
+* Kubernetes local (minikube / docker-desktop)
+* Gmail avec mot de passe d’application
 
 ---
 
@@ -73,16 +86,16 @@ git clone <lien-du-repo>
 cd Projet_ANNUEL
 ```
 
-### 2️⃣ Démarrer la base PostgreSQL via Docker
+### 2️⃣ Lancer PostgreSQL avec Docker (développement simple)
 
 ```bash
 cd backend
 docker-compose up -d
 ```
 
-### 3️⃣ Configurer le fichier `.env` dans le dossier backend
+### 3️⃣ Configurer le fichier `.env` dans le backend
 
-```bash
+```env
 PORT=5000
 
 DATABASE_HOST=localhost
@@ -92,16 +105,16 @@ DATABASE_PASSWORD=postgres
 DATABASE_NAME=jobplatform
 
 JWT_SECRET=monSuperSecretUltraLong
-JWT_EXPIRES_IN=3600s
+JWT_EXPIRES_IN=86400s
 
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USER=tonemail@gmail.com
-MAIL_PASSWORD=ton_mot_de_passe_application
+MAIL_PASSWORD=mot_de_passe_app
 MAIL_FROM=Projet Annuel <tonemail@gmail.com>
-```
 
-⚠ Pour Gmail : utiliser un mot de passe application (sécurité renforcée).
+DAILY_API_KEY=xxxxxxxxxxx
+```
 
 ### 4️⃣ Installer les dépendances Backend
 
@@ -109,7 +122,7 @@ MAIL_FROM=Projet Annuel <tonemail@gmail.com>
 npm install
 ```
 
-### 5️⃣ Démarrer le Backend en mode développement
+### 5️⃣ Lancer le serveur Backend
 
 ```bash
 npm run start:dev
@@ -117,7 +130,7 @@ npm run start:dev
 
 ---
 
-## 💻 Frontend
+## 💻 Frontend (Next.js)
 
 ### 6️⃣ Aller dans le dossier frontend
 
@@ -125,13 +138,13 @@ npm run start:dev
 cd ../frontend
 ```
 
-### 7️⃣ Installer les dépendances Frontend
+### 7️⃣ Installer les dépendances
 
 ```bash
 npm install
 ```
 
-### 8️⃣ Démarrer le Frontend
+### 8️⃣ Lancer le serveur Frontend
 
 ```bash
 npm run dev
@@ -139,33 +152,80 @@ npm run dev
 
 ---
 
-## 🔗 Accès aux interfaces
+## 🔗 Interfaces accessibles
 
-* Frontend (Next.js) : [http://localhost:3000](http://localhost:3000)
-* Backend API (NestJS) : [http://localhost:5000](http://localhost:5000)
-
----
-
-## 🔮 Fonctionnalités prévues à venir
-
-* ⏳ Système de favoris (sauvegarde d’offres)
-* ⏳ Messagerie entre candidat et recruteur
-* ⏳ Pagination sur les offres et candidatures
-* ⏳ Tableau de bord admin global (pour la gestion de la plateforme)
+* **Frontend** : [http://localhost:3000](http://localhost:3000) ou [http://localhost:31000](http://localhost:31000) (Kubernetes)
+* **Backend API** : [http://localhost:5000](http://localhost:5000)
 
 ---
 
-## 📝 Notes utiles
+## ☸️ Déploiement Kubernetes local (Minikube / Docker Desktop)
 
-* En cas de modification lourde de la base :
+### 🔐 Secrets (env sécurisé)
 
-  ```bash
-  docker exec -it <container_postgres> psql -U postgres -d jobplatform
-  ```
-* Toute la logique de rôle et de sécurité est centralisée dans les **Guards NestJS**.
+Créer un fichier `secrets.yaml` (non versionné) dans `k8s/secrets/` puis l’appliquer :
+
+```bash
+kubectl apply -f k8s/secrets/secrets.yaml
+```
+
+Ajoutez `k8s/secrets/secrets.yaml` dans votre `.gitignore` ! ✅
+
+### 🧱 Build des images locales
+
+```bash
+docker build -t backend:latest ./backend
+docker build -t frontend:latest ./frontend
+```
+
+### 🚀 Scripts de redéploiement rapide (PowerShell)
+
+Exemples de scripts PowerShell à la racine :
+
+```powershell
+# redeploy-backend.ps1
+kubectl rollout restart deployment/backend
+```
+
+```powershell
+# redeploy-frontend.ps1
+kubectl rollout restart deployment/frontend
+```
+
+```powershell
+# redeploy-postgres.ps1
+kubectl rollout restart deployment/postgres
+```
+
+Puis à lancer depuis PowerShell :
+
+```powershell
+./redeploy-backend.ps1
+```
 
 ---
 
-## 👩‍💻 Auteur
+## 🔮 Fonctionnalités prévues
 
-Projet développé dans le cadre du Projet Annuel.
+* ⏳ Sauvegarde d’offres en favoris
+* ⏳ Messagerie privée entre utilisateur et recruteur
+* ⏳ Pagination + recherche avancée
+* ⏳ Tableau de bord Admin
+
+---
+
+## 📝 Notes
+
+* Pour entrer dans PostgreSQL :
+
+```bash
+docker exec -it <container_postgres> psql -U postgres -d jobplatform
+```
+
+* Sécurité gérée par **Guards NestJS** selon les rôles.
+
+---
+
+## 📬 Contact
+
+Pour toute question, contactez directement [Ibrahim](https://github.com/Narutino10) ou [Yves](https://github.com/YvesMu).

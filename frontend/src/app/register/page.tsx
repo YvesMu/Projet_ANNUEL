@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Header from "@/components/Header";
+import Link from "next/link";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -11,7 +12,7 @@ export default function Register() {
     password: "",
     role: "particulier", // soit particulier, soit professionnel
     typeOffre: "emploi",
-    domaine: "informatique",
+    domaine: "", // L'utilisateur doit choisir son domaine
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -21,7 +22,7 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/auth/register", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -38,39 +39,75 @@ export default function Register() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-3xl font-bold">Inscription</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-6 w-80">
-          <input
-            name="prenom"
-            placeholder="Prénom"
-            value={form.prenom}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
-          <input
-            name="nom"
-            placeholder="Nom"
-            value={form.nom}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Mot de passe"
-            value={form.password}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md">
+          {/* Card principale */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-100 p-8">
+            {/* Header de la card */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">
+                Inscription
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Rejoignez notre plateforme professionnelle
+              </p>
+            </div>
+
+            {/* Formulaire */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Prénom et Nom sur la même ligne */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Prénom</label>
+                  <input
+                    name="prenom"
+                    placeholder="Votre prénom"
+                    value={form.prenom}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Nom</label>
+                  <input
+                    name="nom"
+                    placeholder="Votre nom"
+                    value={form.nom}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Email</label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="votre.email@exemple.com"
+                  value={form.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                  required
+                />
+              </div>
+
+              {/* Mot de passe */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Mot de passe</label>
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="Mot de passe sécurisé"
+                  value={form.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                  required
+                />
+              </div>
 
           {/* Nouveau select pour choisir le rôle */}
           <select
@@ -83,13 +120,88 @@ export default function Register() {
             <option value="professionnel">Professionnel</option>
           </select>
 
-          <button
-            type="submit"
-            className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
+          {/* Nouveau select pour choisir le domaine de spécialisation */}
+          <select
+            name="domaine"
+            value={form.domaine}
+            onChange={handleChange}
+            className="border p-2 rounded"
           >
-            S&apos;inscrire
-          </button>
-        </form>
+            <option value="">Sélectionnez votre domaine</option>
+            <option value="Développement">Développement / Informatique</option>
+            <option value="Design">Design / Graphisme</option>
+            <option value="Marketing">Marketing / Communication</option>
+            <option value="Ressources Humaines">Ressources Humaines</option>
+            <option value="Finance">Finance / Comptabilité</option>
+            <option value="Commercial">Commercial / Ventes</option>
+            <option value="Juridique">Juridique</option>
+            <option value="Santé">Santé / Médical</option>
+            <option value="Éducation">Éducation / Formation</option>
+            <option value="Ingénierie">Ingénierie</option>
+            <option value="Production">Production / Logistique</option>
+            <option value="Autre">Autre</option>
+          </select>
+
+          {/* Select pour le type d'offre */}
+          <select
+            name="typeOffre"
+            value={form.typeOffre}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="emploi">Emploi</option>
+            <option value="stage">Stage</option>
+            <option value="freelance">Freelance</option>
+            <option value="alternance">Alternance</option>
+          </select>
+
+              {/* Bouton d'inscription */}
+              <button
+                type="submit"
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] mt-8"
+              >
+                Créer mon compte
+              </button>
+            </form>
+
+            {/* Lien vers la connexion */}
+            <div className="text-center mt-8 pt-6 border-t border-gray-200">
+              <p className="text-gray-600">
+                Vous avez déjà un compte ?{" "}
+                <Link 
+                  href="/login" 
+                  className="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-300"
+                >
+                  Se connecter
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          {/* Avantages de l'inscription */}
+          <div className="mt-8 text-center">
+            <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
+              <div className="flex flex-col items-center">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                  ✨
+                </div>
+                <span>Gratuit</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                  🔒
+                </div>
+                <span>Sécurisé</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                  ⚡
+                </div>
+                <span>Rapide</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </>
   );

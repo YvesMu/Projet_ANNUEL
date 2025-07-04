@@ -9,6 +9,8 @@ interface UserProfile {
   prenom?: string;
   nom?: string;
   role: string;
+  domaine: string;
+  typeOffre: string;
   photoUrl?: string;
   cvUrl?: string;
   presentation?: string;
@@ -19,6 +21,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [presentation, setPresentation] = useState("");
+  const [domaine, setDomaine] = useState("");
+  const [typeOffre, setTypeOffre] = useState("");
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const cvInputRef = useRef<HTMLInputElement>(null);
@@ -34,6 +38,8 @@ export default function ProfilePage() {
       .then((data) => {
         setProfile(data);
         setPresentation(data.presentation || "");
+        setDomaine(data.domaine || "");
+        setTypeOffre(data.typeOffre || "");
       })
       .catch((err) => console.error("Erreur profil:", err))
       .finally(() => setLoading(false));
@@ -53,6 +59,33 @@ export default function ProfilePage() {
     });
 
     alert("Présentation mise à jour !");
+  };
+
+  const handleProfileUpdate = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    if (!domaine) {
+      alert("Veuillez sélectionner un domaine");
+      return;
+    }
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ domaine, typeOffre }),
+      });
+
+      alert("Profil mis à jour !");
+      window.location.reload();
+    } catch (err) {
+      console.error("Erreur mise à jour profil:", err);
+      alert("Erreur lors de la mise à jour du profil.");
+    }
   };
 
   const handleFileUpload = async (
@@ -102,6 +135,79 @@ export default function ProfilePage() {
       <Header />
       <main className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
         <h1 className="text-3xl font-bold mb-8 text-center text-blue-700">Mon Profil</h1>
+
+        {/* Informations de base */}
+        <div className="mb-8 p-4 bg-gray-50 rounded-lg">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">Informations personnelles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p><strong>Prénom :</strong> {profile.prenom || "Non renseigné"}</p>
+            </div>
+            <div>
+              <p><strong>Nom :</strong> {profile.nom || "Non renseigné"}</p>
+            </div>
+            <div>
+              <p><strong>Email :</strong> {profile.email}</p>
+            </div>
+            <div>
+              <p><strong>Rôle :</strong> {profile.role === 'particulier' ? 'Particulier' : 'Professionnel'}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Modification du domaine et type d'offre */}
+        <div className="mb-8 p-4 bg-blue-50 rounded-lg">
+          <h2 className="text-xl font-semibold mb-4 text-blue-700">Préférences professionnelles</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="font-semibold block mb-2">Domaine d&apos;activité :</label>
+              <select
+                value={domaine}
+                onChange={(e) => setDomaine(e.target.value)}
+                className="border p-2 rounded w-full"
+                required
+              >
+                <option value="">Sélectionnez un domaine</option>
+                <option value="Développement">Développement / Informatique</option>
+                <option value="Design">Design / Graphisme</option>
+                <option value="Marketing">Marketing / Communication</option>
+                <option value="Ressources Humaines">Ressources Humaines</option>
+                <option value="Finance">Finance / Comptabilité</option>
+                <option value="Commercial">Commercial / Ventes</option>
+                <option value="Juridique">Juridique</option>
+                <option value="Santé">Santé / Médical</option>
+                <option value="Éducation">Éducation / Formation</option>
+                <option value="Ingénierie">Ingénierie</option>
+                <option value="Production">Production / Logistique</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="font-semibold block mb-2">Type d&apos;offre recherché :</label>
+              <select
+                value={typeOffre}
+                onChange={(e) => setTypeOffre(e.target.value)}
+                className="border p-2 rounded w-full"
+                required
+              >
+                <option value="emploi">Emploi</option>
+                <option value="stage">Stage</option>
+                <option value="freelance">Freelance</option>
+                <option value="alternance">Alternance</option>
+              </select>
+            </div>
+          </div>
+
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            onClick={handleProfileUpdate}
+            disabled={uploading}
+          >
+            Mettre à jour mes préférences
+          </button>
+        </div>
 
         <div className="flex justify-center mb-8">
           {profile.photoUrl ? (

@@ -29,7 +29,14 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async updateProfile(
-    @Body() update: { cvUrl?: string; presentation?: string; photoUrl?: string },
+    @Body()
+    update: {
+      cvUrl?: string;
+      presentation?: string;
+      photoUrl?: string;
+      domaine?: string;
+      typeOffre?: string;
+    },
     @Req() req: Request & { user?: CustomJwtPayload },
   ) {
     const userId = req.user?.id;

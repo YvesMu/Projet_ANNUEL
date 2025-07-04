@@ -2,6 +2,7 @@
 
 import { useChatContext } from "./ChatContext";
 import ConversationList from "./ConversationList";
+import NewConversation from "./NewConversation";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 
@@ -16,6 +17,7 @@ export default function ChatWindow() {
     >
       <div className="flex flex-row h-full">
         <div className="w-1/2 border-r overflow-y-auto">
+          <NewConversation />
           <ConversationList />
         </div>
         <div className="w-1/2 flex flex-col">

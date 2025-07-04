@@ -12,7 +12,7 @@ export default function Register() {
     password: "",
     role: "particulier", // soit particulier, soit professionnel
     typeOffre: "emploi",
-    domaine: "informatique",
+    domaine: "", // L'utilisateur doit choisir son domaine
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -109,20 +109,51 @@ export default function Register() {
                 />
               </div>
 
-              {/* Sélection du rôle */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Type de compte</label>
-                <select
-                  name="role"
-                  value={form.role}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                  required
-                >
-                  <option value="particulier">🙋‍♂️ Particulier - Je cherche un emploi</option>
-                  <option value="professionnel">🏢 Professionnel - Je recrute</option>
-                </select>
-              </div>
+          {/* Nouveau select pour choisir le rôle */}
+          <select
+            name="role"
+            value={form.role}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="particulier">Particulier</option>
+            <option value="professionnel">Professionnel</option>
+          </select>
+
+          {/* Nouveau select pour choisir le domaine de spécialisation */}
+          <select
+            name="domaine"
+            value={form.domaine}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="">Sélectionnez votre domaine</option>
+            <option value="Développement">Développement / Informatique</option>
+            <option value="Design">Design / Graphisme</option>
+            <option value="Marketing">Marketing / Communication</option>
+            <option value="Ressources Humaines">Ressources Humaines</option>
+            <option value="Finance">Finance / Comptabilité</option>
+            <option value="Commercial">Commercial / Ventes</option>
+            <option value="Juridique">Juridique</option>
+            <option value="Santé">Santé / Médical</option>
+            <option value="Éducation">Éducation / Formation</option>
+            <option value="Ingénierie">Ingénierie</option>
+            <option value="Production">Production / Logistique</option>
+            <option value="Autre">Autre</option>
+          </select>
+
+          {/* Select pour le type d'offre */}
+          <select
+            name="typeOffre"
+            value={form.typeOffre}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          >
+            <option value="emploi">Emploi</option>
+            <option value="stage">Stage</option>
+            <option value="freelance">Freelance</option>
+            <option value="alternance">Alternance</option>
+          </select>
 
               {/* Bouton d'inscription */}
               <button

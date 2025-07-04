@@ -21,6 +21,7 @@ export default function OffresPage() {
   const [offres, setOffres] = useState<Offre[]>([]);
   const [filtered, setFiltered] = useState<Offre[]>([]);
   const [search, setSearch] = useState("");
+  const [selectedDomain, setSelectedDomain] = useState("");
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
 

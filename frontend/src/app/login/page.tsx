@@ -43,10 +43,8 @@ export default function Login() {
 
       console.log("Connexion réussie :", data);
 
-      // Stocker le token en localStorage
       localStorage.setItem("token", data.token);
 
-      // Rediriger sur le dashboard
       router.push("/dashboard");
     } catch (err: unknown) {
       console.error("Erreur lors de la connexion :", err);
@@ -63,124 +61,132 @@ export default function Login() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md">
-          {/* Card principale */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-100 p-8">
-            {/* Header de la card */}
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-4">
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-6 py-12 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-72 h-72 bg-gradient-to-br from-blue-400/10 to-indigo-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-400/10 to-pink-400/10 rounded-full blur-3xl"></div>
+        
+        <div className="w-full max-w-lg relative z-10">
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100/50 p-10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+            
+            <div className="text-center mb-10">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-6 shadow-lg">
                 🔐
               </div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
                 Connexion
               </h1>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 text-xl">
                 Accédez à votre espace professionnel
               </p>
             </div>
 
-            {/* Formulaire */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email</label>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-gray-700 flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                  Email
+                </label>
                 <input
                   name="email"
                   type="email"
                   placeholder="votre.email@exemple.com"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                  className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm shadow-sm hover:shadow-md"
                   required
                 />
               </div>
 
-              {/* Mot de passe */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Mot de passe</label>
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-gray-700 flex items-center">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                  Mot de passe
+                </label>
                 <input
                   name="password"
                   type="password"
                   placeholder="Votre mot de passe"
                   value={form.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                  className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 backdrop-blur-sm shadow-sm hover:shadow-md"
                   required
                 />
               </div>
 
-              {/* Message d'erreur */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <div className="bg-red-50/80 backdrop-blur-sm border-2 border-red-200 rounded-2xl p-5">
                   <div className="flex items-center">
-                    <span className="text-red-500 text-lg mr-2">⚠️</span>
-                    <p className="text-red-700 font-medium">{error}</p>
+                    <span className="text-red-500 text-2xl mr-3">⚠️</span>
+                    <p className="text-red-700 font-bold text-lg">{error}</p>
                   </div>
                 </div>
               )}
 
-              {/* Bouton de connexion */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] mt-8 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full py-5 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 mt-10 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-lg"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Connexion...
+                    <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                    Connexion en cours...
                   </div>
                 ) : (
-                  "Se connecter"
+                  <div className="flex items-center justify-center">
+                    <span className="mr-3 text-xl">🚀</span>
+                    Se connecter
+                  </div>
                 )}
               </button>
             </form>
 
-            {/* Lien vers l'inscription */}
-            <div className="text-center mt-8 pt-6 border-t border-gray-200">
-              <p className="text-gray-600">
-                Vous n'avez pas encore de compte ?{" "}
+            <div className="text-center mt-10 pt-8 border-t-2 border-gray-100">
+              <p className="text-gray-600 text-lg">
+                Vous n&apos;avez pas encore de compte ?{" "}
                 <Link 
                   href="/register" 
-                  className="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-300"
+                  className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300 underline decoration-2 underline-offset-4"
                 >
                   Créer un compte
                 </Link>
               </p>
             </div>
 
-            {/* Mot de passe oublié */}
-            <div className="text-center mt-4">
+            <div className="text-center mt-6">
               <Link 
-                href="#" 
-                className="text-sm text-gray-500 hover:text-blue-600 transition-colors duration-300"
+                href="/forgot-password" 
+                className="text-gray-500 hover:text-blue-600 transition-colors duration-300 font-medium"
               >
                 Mot de passe oublié ?
               </Link>
             </div>
           </div>
 
-          {/* Avantages de la connexion */}
-          <div className="mt-8 text-center">
-            <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                  🎯
+          <div className="mt-12 text-center">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Pourquoi se connecter ?</h3>
+            <div className="grid grid-cols-3 gap-6">
+              <div className="flex flex-col items-center p-4 bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-r from-blue-100 to-blue-200 rounded-full flex items-center justify-center mb-3 shadow-md">
+                  <span className="text-2xl">🎯</span>
                 </div>
-                <span>Accès rapide</span>
+                <span className="font-bold text-gray-900">Accès rapide</span>
+                <span className="text-sm text-gray-600 mt-1">Dashboard personnalisé</span>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
-                  💼
+              <div className="flex flex-col items-center p-4 bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-r from-green-100 to-green-200 rounded-full flex items-center justify-center mb-3 shadow-md">
+                  <span className="text-2xl">💼</span>
                 </div>
-                <span>Mes offres</span>
+                <span className="font-bold text-gray-900">Mes offres</span>
+                <span className="text-sm text-gray-600 mt-1">Gestion complète</span>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-                  📊
+              <div className="flex flex-col items-center p-4 bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-r from-purple-100 to-purple-200 rounded-full flex items-center justify-center mb-3 shadow-md">
+                  <span className="text-2xl">📊</span>
                 </div>
-                <span>Tableau de bord</span>
+                <span className="font-bold text-gray-900">Statistiques</span>
+                <span className="text-sm text-gray-600 mt-1">Suivi des candidatures</span>
               </div>
             </div>
           </div>

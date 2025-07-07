@@ -4,14 +4,14 @@ metadata:
   name: app-config
 data:
   # Frontend
-  NEXT_PUBLIC_API_URL: "http://162.19.78.55:32000"
+  NEXT_PUBLIC_API_URL: "http://backend:5000"
   NODE_ENV: "production"
   
   # Backend
   DATABASE_HOST: "postgres"
   DATABASE_PORT: "5432"
   DATABASE_NAME: "annuel_db"
-  BACKEND_URL: "http://162.19.78.55:32000"
+  BACKEND_URL: "http://localhost:32000"
   JWT_SECRET: "your-jwt-secret-key"
   MAIL_HOST: "smtp.gmail.com"
   MAIL_PORT: "587"

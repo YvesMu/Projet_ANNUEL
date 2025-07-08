@@ -10,8 +10,7 @@ data:
   # Backend
   DATABASE_HOST: "postgres"
   DATABASE_PORT: "5432"
-  DATABASE_NAME: "annuel_db"
+  DATABASE_NAME: "jobplatform"
   BACKEND_URL: "http://localhost:32000"
-  JWT_SECRET: "your-jwt-secret-key"
   MAIL_HOST: "smtp.gmail.com"
   MAIL_PORT: "587"

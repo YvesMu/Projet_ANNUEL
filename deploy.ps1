@@ -3,6 +3,7 @@ kubectl apply -f k8s/secrets/secrets.yaml --validate=false
 
 Write-Host "Creating volumes..."
 kubectl apply -f k8s/volumes/postgres-pvc.yaml --validate=false
+kubectl apply -f k8s/volumes/uploads-pvc.yaml --validate=false
 
 Write-Host "Deploying services..."
 kubectl apply -f k8s/services/ --validate=false

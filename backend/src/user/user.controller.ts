@@ -76,8 +76,8 @@ export class UserController {
   ) {
     if (!file) throw new BadRequestException('Aucun fichier fourni');
 
-    const backendUrl = this.config.get<string>('BACKEND_URL');
-    const photoUrl = `${backendUrl}/uploads/profile/${file.filename}`;
+    // Passer seulement le nom du fichier, le service construira l'URL complète
+    const photoUrl = file.filename;
 
     const userId = req.user?.id;
     if (typeof userId !== 'number') throw new Error('User ID is missing or invalid');
@@ -108,8 +108,8 @@ export class UserController {
   ) {
     if (!file) throw new BadRequestException('Aucun fichier fourni');
 
-    const backendUrl = this.config.get<string>('BACKEND_URL');
-    const cvUrl = `${backendUrl}/uploads/cv/${file.filename}`;
+    // Passer seulement le nom du fichier, le service construira l'URL complète
+    const cvUrl = file.filename;
 
     const userId = req.user?.id;
     if (typeof userId !== 'number') throw new Error('User ID is missing or invalid');

@@ -38,7 +38,7 @@ export default function CalendrierInteractif() {
       return;
     }
 
-    fetch("http://localhost:5000/video-call/my-calls", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/my-calls`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -225,7 +225,7 @@ export default function CalendrierInteractif() {
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
-            Guide d'utilisation
+            Guide d&lsquo;utilisation
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[

@@ -18,7 +18,7 @@ export class Postulation {
   @ManyToOne(() => User, (user) => user.postulations, { eager: true })
   candidat: User;
 
-  @ManyToOne(() => Offre, (offre) => offre.postulations, { eager: true })
+  @ManyToOne(() => Offre, (offre) => offre.postulations, { eager: true, onDelete: 'CASCADE' })
   offre: Offre;
 
   @CreateDateColumn()

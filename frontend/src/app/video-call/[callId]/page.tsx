@@ -19,10 +19,12 @@ export default function VideoCallPage() {
   const callFrameRef = useRef<DailyCall | null>(null);
 
   const [loading, setLoading] = useState(true);
+  const [roomUrl, setRoomUrl] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [username, setUsername] = useState("Moi");
 
+  // Premier useEffect : Authentification et récupération de l'URL de la room
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -42,67 +44,80 @@ export default function VideoCallPage() {
       console.error("Erreur lors du décodage du token JWT :", err);
     }
 
-    const joinCall = async () => {
+    const fetchRoom = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/${callId}`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:32000';
+        console.log('🌐 API URL:', apiUrl);
+        console.log('📞 Call ID:', callId);
+        
+        const res = await fetch(`${apiUrl}/video-call/${callId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!res.ok) throw new Error("Impossible de récupérer la room");
 
-        const { roomUrl } = await res.json();
-
-        // 💡 Toujours détruire toute instance précédente (par sécurité)
-        if (callFrameRef.current) {
-          callFrameRef.current.leave();
-          callFrameRef.current.destroy();
-          callFrameRef.current = null;
-        }
-
-        if (containerRef.current) {
-          const frame = DailyIframe.createFrame(containerRef.current, {
-            iframeStyle: {
-              width: "100%",
-              height: "100%",
-              border: "0",
-              borderRadius: "0.5rem",
-            },
-            showLeaveButton: true,
-          });
-
-          await frame.join({ url: roomUrl });
-          frame.on("left-meeting", () => router.push("/dashboard"));
-
-          frame.on("app-message", (event) => {
-            console.log("📥 Message reçu complet :", JSON.stringify(event, null, 2)); // ✅ pour debug
-
-            const { data } = event;
-            if (data.type === "chat") {
-              console.log("📥 Chat avec nom :", data.name);
-
-              setChatMessages((prev) => [
-                ...prev,
-                {
-                  sender: data.name || "Autre",
-                  text: data.text,
-                  timestamp: new Date().toLocaleTimeString(),
-                },
-              ]);
-            }
-          });
-
-          callFrameRef.current = frame;
-        }
+        const response = await res.json();
+        console.log('📡 API Response:', response);
+        setRoomUrl(response.roomUrl);
       } catch (err) {
-        console.error("❌ Erreur join visio :", err);
-        alert("Impossible de rejoindre l'appel vidéo.");
+        console.error("❌ Erreur récupération room :", err);
+        alert("Impossible de récupérer la room");
         router.push("/dashboard");
       } finally {
         setLoading(false);
       }
     };
 
-    joinCall();
+    fetchRoom();
+  }, [callId, router]);
+
+  // Deuxième useEffect : Création de l'iframe Daily une fois l'URL récupérée
+  useEffect(() => {
+    if (roomUrl && containerRef.current && !callFrameRef.current) {
+      console.log('📦 Container found, creating Daily frame...');
+      console.log('🎥 Room URL:', roomUrl);
+      
+      const frame = DailyIframe.createFrame(containerRef.current, {
+        iframeStyle: {
+          width: "100%",
+          height: "100%",
+          border: "0",
+          borderRadius: "0.5rem",
+        },
+        showLeaveButton: true,
+      });
+
+      console.log('🚀 Frame created, joining room...');
+      frame.join({ url: roomUrl })
+        .then(() => {
+          console.log('✅ Successfully joined room!');
+        })
+        .catch((err) => {
+          console.error('❌ Error joining room:', err);
+        });
+      
+      frame.on("left-meeting", () => router.push("/dashboard"));
+
+      frame.on("app-message", (event) => {
+        console.log("📥 Message reçu complet :", JSON.stringify(event, null, 2));
+
+        const { data } = event;
+        if (data.type === "chat") {
+          console.log("📥 Chat avec nom :", data.name);
+
+          setChatMessages((prev) => [
+            ...prev,
+            {
+              sender: data.name || "Autre",
+              text: data.text,
+              timestamp: new Date().toLocaleTimeString(),
+            },
+          ]);
+        }
+      });
+
+      callFrameRef.current = frame;
+    }
 
     return () => {
       if (callFrameRef.current) {
@@ -111,7 +126,7 @@ export default function VideoCallPage() {
         callFrameRef.current = null;
       }
     };
-  }, [callId, router]);
+  }, [roomUrl, router]);
 
   const sendMessage = () => {
     if (!newMessage.trim()) return;

@@ -18,6 +18,8 @@ spec:
         - name: frontend
           image: frontend:latest
           imagePullPolicy: Never
-
+          envFrom:
+            - configMapRef:
+                name: app-config
           ports:
             - containerPort: 3000

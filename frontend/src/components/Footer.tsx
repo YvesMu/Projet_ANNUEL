@@ -48,13 +48,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  📊 Dashboard
+                <Link href="/login" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
+                  � Connexion
                 </Link>
               </li>
               <li>
-                <Link href="/mes-visios" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  📹 Mes Visios
+                <Link href="/register" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
+                  ✨ Inscription
                 </Link>
               </li>
             </ul>
@@ -65,24 +65,24 @@ export default function Footer() {
             <h3 className="text-xl font-semibold mb-6">Services</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/create-offer" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  ✨ Créer une offre
+                <Link href="/register" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
+                  🚀 Rejoindre la plateforme
                 </Link>
               </li>
               <li>
-                <Link href="/planifier-visio" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  📅 Planifier un appel
+                <Link href="/offres" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
+                  � Rechercher un emploi
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  🎯 Conseils carrière
-                </a>
+                <Link href="/login" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
+                  💼 Espace recruteur
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  📈 Formation
-                </a>
+                <Link href="/rgpd" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
+                  �️ Protection des données
+                </Link>
               </li>
             </ul>
           </div>

@@ -16,7 +16,6 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { CustomJwtPayload } from '../common/interfaces/custom-jwt-payload.interface';
-import { User } from '../user/user.entity';
 
 @Controller('offres')
 export class OffreController {
@@ -28,16 +27,6 @@ export class OffreController {
     return await this.offreService.findAll();
   }
 
-  // ✅ PRO : créer une offre (professionnel uniquement)
-  @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('professionnel')
-  async create(@Body() createOffreDto: CreateOffreDto, @CurrentUser() user: CustomJwtPayload) {
-    const auteur = new User();
-    auteur.id = user.id;
-    return this.offreService.create(createOffreDto, auteur);
-  }
-
   // ✅ PRO : récupérer MES offres
   @Get('my')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -47,7 +36,47 @@ export class OffreController {
     return this.offreService.findByUser(user.id);
   }
 
-  // ✅ PUBLIC : récupérer une offre par son id
+  // ✅ PARTICULIER : récupérer les offres recommandées selon le domaine
+  @Get('recommended')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('particulier')
+  async getRecommendedOffers(@CurrentUser() user: CustomJwtPayload) {
+    console.log('🔍 Domaine dans controller recommended:', user.domaine);
+    if (!user.domaine) {
+      throw new Error('Domaine utilisateur non défini');
+    }
+    return this.offreService.findRecommendedOffers(user.domaine);
+  }
+
+  // ✅ PARTICULIER : récupérer uniquement les offres de mon domaine
+  @Get('my-domain')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('particulier')
+  async getOffersByMyDomain(@CurrentUser() user: CustomJwtPayload) {
+    console.log('🔍 Domaine dans controller my-domain:', user.domaine);
+    if (!user.domaine) {
+      throw new Error('Domaine utilisateur non défini');
+    }
+    return this.offreService.findByUserDomain(user.domaine);
+  }
+
+  // ✅ CANDIDATS
+  @Get('candidats')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('professionnel')
+  async getAllCandidats() {
+    return this.offreService.getAllCandidats();
+  }
+
+  // ✅ PRO : créer une nouvelle offre
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('professionnel')
+  async create(@Body() createOffreDto: CreateOffreDto, @CurrentUser() user: CustomJwtPayload) {
+    return await this.offreService.create(createOffreDto, user.id);
+  }
+
+  // ✅ PUBLIC : récupérer une offre par son id (CETTE ROUTE DOIT ÊTRE EN DERNIER)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.offreService.findById(id);
@@ -72,35 +101,5 @@ export class OffreController {
     @CurrentUser() user: CustomJwtPayload,
   ) {
     return await this.offreService.update(id, user.id, updateDto);
-  }
-
-  @Get('candidats')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('professionnel')
-  async finAllCandidats() {
-    return this.offreService.getAllCandidats();
-  }
-
-  // ✅ PARTICULIER : récupérer les offres recommandées selon le domaine
-  @Get('recommended')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('particulier')
-  async getRecommendedOffers(@CurrentUser() user: CustomJwtPayload) {
-    // On doit récupérer les infos complètes de l'utilisateur pour avoir son domaine
-    if (!user.domaine) {
-      throw new Error('Domaine utilisateur non défini');
-    }
-    return this.offreService.findRecommendedOffers(user.domaine);
-  }
-
-  // ✅ PARTICULIER : récupérer uniquement les offres de mon domaine
-  @Get('my-domain')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('particulier')
-  async getOffersByMyDomain(@CurrentUser() user: CustomJwtPayload) {
-    if (!user.domaine) {
-      throw new Error('Domaine utilisateur non défini');
-    }
-    return this.offreService.findByUserDomain(user.domaine);
   }
 }

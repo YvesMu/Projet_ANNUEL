@@ -31,13 +31,14 @@ export class OffreService {
   async delete(id: number, userId: number): Promise<void> {
     const offre = await this.offreRepository.findOne({
       where: { id, auteur: { id: userId } },
-      relations: ['auteur'],
+      relations: ['auteur', 'postulations'],
     });
 
     if (!offre) {
       throw new Error('Offre introuvable ou non autorisée');
     }
 
+    // Supprimer l'offre (les postulations seront supprimées en cascade)
     await this.offreRepository.remove(offre);
   }
 

@@ -4,7 +4,7 @@ metadata:
   name: app-config
 data:
   # Frontend
-  NEXT_PUBLIC_API_URL: "http://backend:5000"
+  NEXT_PUBLIC_API_URL: "http://localhost:32000"
   NODE_ENV: "production"
   
   # Backend

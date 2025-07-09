@@ -1,5 +1,10 @@
 # 🎯 Projet Annuel - Plateforme de Recrutement (Professionnel / Particulier)
 
+## 📋 Table des Matières
+
+1. [Partie I - Projet Annuel](#partie-i---projet-annuel)
+2. [Partie II - Clusterisation de Container](#partie-ii---clusterisation-de-container)
+
 ---
 
 ## 👨‍💻 Auteurs
@@ -8,6 +13,8 @@
 * **MU Yves** — [GitHub: YvesMu](https://github.com/YvesMu)
 
 ---
+
+# Partie I - Projet Annuel
 
 ## ⚙️ Technologies utilisées
 
@@ -229,3 +236,217 @@ docker exec -it <container_postgres> psql -U postgres -d jobplatform
 ## 📬 Contact
 
 Pour toute question, contactez directement [Ibrahim](https://github.com/Narutino10) ou [Yves](https://github.com/YvesMu).
+
+---
+
+## 📂 Structure du Projet
+
+```
+Projet_ANNUEL/
+├── backend/                    # API NestJS
+│   ├── src/
+│   ├── Dockerfile
+│   └── package.json
+├── frontend/                   # Interface Next.js
+│   ├── src/
+│   ├── Dockerfile
+│   └── package.json
+├── k8s/                       # Manifests Kubernetes
+│   ├── deployments/
+│   ├── services/
+│   ├── ingress/
+│   ├── secrets/
+│   └── volumes/
+├── docker-compose.yml         # Développement local
+└── deploy-*.ps1              # Scripts de déploiement
+```
+
+## 🔄 Étapes de Déploiement Kubernetes
+
+### 1. Prérequis
+
+```powershell
+# Vérifier que le cluster est actif
+kubectl get nodes
+
+# Créer le namespace
+kubectl create namespace jobplatform
+```
+
+### 2. Déploiement des Secrets
+
+```powershell
+kubectl apply -f k8s/secrets/secrets.yaml
+```
+
+### 3. Déploiement des Volumes
+
+```powershell
+kubectl apply -f k8s/volumes/
+```
+
+### 4. Déploiement des Services
+
+```powershell
+kubectl apply -f k8s/services/
+kubectl apply -f k8s/deployments/
+```
+
+### 5. Configuration Ingress
+
+```powershell
+kubectl apply -f k8s/ingress/
+```
+
+### 6. Vérification
+
+```powershell
+# Vérifier les pods
+kubectl get pods -n jobplatform
+
+# Vérifier les services
+kubectl get svc -n jobplatform
+
+# Suivre les logs
+kubectl logs -f deployment/backend -n jobplatform
+```
+
+## 🧪 Tests de Haute Disponibilité
+
+### Test de Résilience
+
+```powershell
+# Simuler la panne d'un pod
+kubectl delete pod -l app=backend -n jobplatform
+
+# Vérifier la récupération automatique
+kubectl get pods -n jobplatform -w
+```
+
+### Test de Montée en Charge
+
+```powershell
+# Augmenter le nombre de réplicas
+kubectl scale deployment backend --replicas=5 -n jobplatform
+
+# Vérifier la scalabilité
+kubectl get pods -n jobplatform
+```
+
+## 📊 Monitoring
+
+### Commandes Utiles
+
+```powershell
+# Statut général
+kubectl get all -n jobplatform
+
+# Utilisation des ressources
+kubectl top pods -n jobplatform
+
+# Événements
+kubectl get events -n jobplatform --sort-by=.metadata.creationTimestamp
+```
+
+## 🔧 Dépannage
+
+### Problèmes Courants
+
+1. **Pods en état Pending** : Vérifier les ressources disponibles
+2. **Erreurs de connexion DB** : Contrôler les secrets et la configuration
+3. **Ingress non accessible** : Vérifier la configuration DNS/hosts
+
+### Logs Utiles
+
+```powershell
+# Logs d'un deployment
+kubectl logs deployment/backend -n jobplatform
+
+# Logs d'un pod spécifique
+kubectl logs <pod-name> -n jobplatform
+
+# Décrire un pod en erreur
+kubectl describe pod <pod-name> -n jobplatform
+```
+
+# Partie II - Clusterisation de Container
+
+## 🎯 Contexte & Objectif
+
+Cette partie du projet consiste à transposer l'application développée dans la Partie I vers une architecture conteneurisée et orchestrée, en utilisant Kubernetes pour assurer :
+
+- **Haute disponibilité** (réplicas, load balancing, scaling horizontal)
+- **Sécurité** (secrets, HTTPS)
+- **Persistance** (volumes pour la DB, etc.)
+- **Documentation** et manifests (scripts, YAML, etc.)
+
+## 📋 Exigences Minimales (Obligatoires)
+
+### 🔧 Cluster
+
+- **Kubernetes** (k3s, k8s, ou Cloud type GKE/AKS/EKS)
+- **Configuration** : 1 master + 2 workers minimum
+- **Local** (Workstation, VirtualBox, Proxmox) ou VPS
+
+### 🚀 Déploiement de l'application
+
+1. **Services conteneurisés** : Frontend et Backend (chacun un Deployment/Service)
+2. **Base de données** conteneurisée liée via Service ou DNS interne
+3. **Manifests** YAML organisés dans des namespaces
+4. **Réplicas** : Backend (2 minimum), Frontend (3 minimum), Base de données (1)
+
+### 💾 Persistance des données
+
+- **Volumes** : BDD et fichiers uploadés survivent aux redéploiements
+- **Kubernetes** : Usage de PersistentVolume/PersistentVolumeClaim
+- **Résistance** : Redémarrage automatique sans perte de données
+
+### 🔐 Sécurité
+
+- **Secrets** : Kubernetes Secret pour mots de passe et clés sensibles
+- **ConfigMaps** : Variables de configuration moins sensibles
+- **HTTPS** : Certificat auto-signé ou Let's Encrypt via Ingress/Load Balancer
+
+### 🌐 Exposition et Mise en Réseau
+
+- **Load Balancer/Ingress** : Traefik ou NGINX pour accès externe
+- **DNS** : Configuration pour `app.local` ou nom de domaine
+
+### 📚 Documentation & Scripts
+
+- **Tutoriel** : Installation complète (cluster, déploiement)
+- **Captures d'écran** : Tests de scalabilité, kill pod, etc.
+- **Scripts** : Automatisation des déploiements
+
+## 🌟 Bonus (jusqu'à +5 points)
+
+1. **Resource Requests & Limits** + QoS : Régulation CPU/RAM
+2. **Node Affinity / Taints & Tolerations** : Contraintes de déploiement
+3. **NetworkPolicy** : Restriction communication réseau
+4. **Rolling Update / Canary** : Déploiement progressif
+5. **Autoscaling horizontal** (HPA)
+6. **CI/CD** : Pipeline GitHub Actions/GitLab CI
+7. **Rollback automatique** : En cas d'échec
+8. **Helm Charts** : Paramétrage de la stack
+9. **Backup/Restoration** : Velero ou scripts
+10. **Scalabilité automatique** : Scripts avancés
+
+## 📊 Barème (15 + 5 bonus)
+
+| Critères | Points |
+|----------|---------|
+| Cluster (1 master + 2 workers) | 2 |
+| Déploiement (front, back, BDD conteneurisés) | 5 |
+| Persistance (volumes, DB survive) | 2 |
+| Sécurité (secrets, HTTPS) | 2 |
+| Exposition (LB/Ingress, DNS/hosts) | 2 |
+| Documentation & scripts | 2 |
+| **Total** | **15** |
+| **Bonus** | **+5 max** |
+
+## 🎯 Livrables
+
+- **Dépôt Git** : Code, Dockerfiles, YAML, scripts
+- **Documentation** : Schéma d'architecture, étapes d'installation
+- **Captures** : Démonstration réplication, tolérance aux pannes
+- **Rapport** : Bonus implémentés et justification

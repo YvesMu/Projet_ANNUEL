@@ -24,7 +24,7 @@ export default function VisioRoom() {
 
     const fetchRoom = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/${callId}`, {
+        const res = await fetch(`http://localhost:5000/video-call/${callId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -28,7 +28,7 @@ export default function CalendrierVisio() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/video-call/my-calls`, {
+    fetch("http://localhost:5000/video-call/my-calls", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

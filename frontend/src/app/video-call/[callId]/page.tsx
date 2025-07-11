@@ -46,7 +46,7 @@ export default function VideoCallPage() {
 
     const fetchRoom = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:32000';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
         console.log('🌐 API URL:', apiUrl);
         console.log('📞 Call ID:', callId);
         

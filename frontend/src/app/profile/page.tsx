@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -24,6 +25,7 @@ export default function ProfilePage() {
   const [presentation, setPresentation] = useState("");
   const [domaine, setDomaine] = useState("");
   const [typeOffre, setTypeOffre] = useState("");
+  const [imageKey, setImageKey] = useState(Date.now()); // Pour forcer le rechargement de l'image
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const cvInputRef = useRef<HTMLInputElement>(null);
@@ -112,14 +114,32 @@ export default function ProfilePage() {
     setUploading(true);
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/upload/${type}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/upload/${type}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
-      alert(`${type === "photo" ? "Photo" : "CV"} mis à jour !`);
-      window.location.reload();
+      if (response.ok) {
+        const updatedUser = await response.json();
+        
+        // Mettre à jour le profil avec les nouvelles données
+        setProfile(updatedUser);
+        
+        // Forcer le rechargement de l'image
+        if (type === "photo") {
+          setImageKey(Date.now());
+        }
+        
+        alert(`${type === "photo" ? "Photo" : "CV"} mis à jour !`);
+        
+        // Forcer la récupération des nouvelles données
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      } else {
+        throw new Error("Erreur lors de l'upload");
+      }
     } catch (err) {
       console.error("Erreur upload :", err);
       alert("Erreur lors de l'upload.");
@@ -191,10 +211,13 @@ export default function ProfilePage() {
                 <div className="text-center mb-8">
                   <div className="relative inline-block mb-6">
                     {profile.photoUrl ? (
-                      <img 
-                        src={profile.photoUrl} 
-                        alt="Photo de profil" 
-                        className="w-32 h-32 rounded-full object-cover border-4 border-indigo-200 shadow-xl" 
+                      <Image
+                        src={`${profile.photoUrl}?t=${imageKey}`}
+                        alt="Photo de profil"
+                        width={128}
+                        height={128}
+                        className="w-32 h-32 rounded-full object-cover border-4 border-indigo-200 shadow-xl"
+                        unoptimized
                       />
                     ) : (
                       <div className="w-32 h-32 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-600 text-4xl border-4 border-indigo-200 shadow-xl">

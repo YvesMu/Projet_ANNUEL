@@ -12,8 +12,11 @@ export class OffreService {
     private offreRepository: Repository<Offre>,
   ) {}
 
-  async create(createOffreDto: CreateOffreDto, auteur: User): Promise<Offre> {
-    const offre = this.offreRepository.create({ ...createOffreDto, auteur });
+  async create(createOffreDto: CreateOffreDto, userId: number): Promise<Offre> {
+    const offre = this.offreRepository.create({ 
+      ...createOffreDto, 
+      auteur: { id: userId } as User 
+    });
     return await this.offreRepository.save(offre);
   }
 
@@ -31,13 +34,14 @@ export class OffreService {
   async delete(id: number, userId: number): Promise<void> {
     const offre = await this.offreRepository.findOne({
       where: { id, auteur: { id: userId } },
-      relations: ['auteur'],
+      relations: ['auteur', 'postulations'],
     });
 
     if (!offre) {
       throw new Error('Offre introuvable ou non autorisée');
     }
 
+    // Supprimer l'offre (les postulations seront supprimées en cascade)
     await this.offreRepository.remove(offre);
   }
 

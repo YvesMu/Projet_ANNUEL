@@ -92,29 +92,9 @@ export default function Footer() {
             <h3 className="text-xl font-semibold mb-6">Support</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  ❓ Centre d'aide
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  📞 Nous contacter
-                </a>
-              </li>
-              <li>
                 <Link href="/rgpd" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
                   🛡️ Protection des données (RGPD)
                 </Link>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  🔒 Confidentialité
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center">
-                  📋 Conditions d'utilisation
-                </a>
               </li>
             </ul>
           </div>

@@ -19,8 +19,11 @@ export class OffreService {
     private dataSource: DataSource,
   ) {}
 
-  async create(createOffreDto: CreateOffreDto, auteur: User): Promise<Offre> {
-    const offre = this.offreRepository.create({ ...createOffreDto, auteur });
+  async create(createOffreDto: CreateOffreDto, userId: number): Promise<Offre> {
+    const offre = this.offreRepository.create({ 
+      ...createOffreDto, 
+      auteur: { id: userId } as User 
+    });
     return await this.offreRepository.save(offre);
   }
 

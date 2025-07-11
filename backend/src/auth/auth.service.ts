@@ -30,7 +30,15 @@ export class AuthService {
       domaine: registerDto.domaine,
     });
 
-    const payload = { id: user.id, email: user.email, username: user.prenom + ' ' + user.nom };
+    const payload = { 
+      id: user.id, 
+      email: user.email, 
+      role: user.role,
+      prenom: user.prenom,
+      nom: user.nom,
+      domaine: user.domaine,
+      username: user.prenom + ' ' + user.nom 
+    };
     const token = this.jwtService.sign(payload);
 
     await this.mailerService.sendUserConfirmation(user.email, token);
@@ -96,5 +104,24 @@ export class AuthService {
     } catch {
       throw new BadRequestException('Token invalide ou expiré');
     }
+  }
+
+  async generateNewToken(userId: number) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException('Utilisateur non trouvé');
+    }
+
+    const payload = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      prenom: user.prenom,
+      nom: user.nom,
+      domaine: user.domaine,
+    };
+    const token = this.jwtService.sign(payload);
+
+    return { token };
   }
 }

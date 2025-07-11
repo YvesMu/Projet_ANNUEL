@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/components/ChatWidget/ChatContext";
 import ChatWidget from "@/components/ChatWidget/ChatWidget";
+import CookieBanner from "@/components/CookieBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         <ChatProvider>
         {children}
         <ChatWidget />
+        <CookieBanner />
         </ChatProvider>
       </body>
     </html>

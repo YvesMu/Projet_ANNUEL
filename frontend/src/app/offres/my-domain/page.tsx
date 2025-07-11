@@ -34,22 +34,55 @@ export default function MyDomainOffersPage() {
     // Décoder le token pour récupérer le domaine de l'utilisateur
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      setUserDomain(payload.domaine);
+      console.log("Payload décodé:", payload); // Debug
+      
+      // Vérifier le rôle utilisateur
+      if (payload.role !== 'particulier') {
+        setError("Cette fonctionnalité est réservée aux utilisateurs particuliers. Les professionnels peuvent gérer leurs offres via la section 'Mes offres'.");
+        setLoading(false);
+        return;
+      }
+      
+      setUserDomain(payload.domaine || "");
+      
+      // Vérifier si l'utilisateur a un domaine
+      if (!payload.domaine) {
+        setError("Votre profil ne contient pas d'information sur votre domaine d'expertise. Veuillez compléter votre profil.");
+        setLoading(false);
+        return;
+      }
     } catch (error) {
       console.error("Erreur lors du décodage du token:", error);
+      setError("Session invalide - Veuillez vous reconnecter");
+      setLoading(false);
+      return;
     }
 
+    console.log("Appel API vers:", `${process.env.NEXT_PUBLIC_API_URL}/offres/my-domain`); // Debug
+    
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/my-domain`, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     })
       .then(async (res) => {
+        console.log("Réponse API:", res.status, res.statusText); // Debug
+        
         if (!res.ok) {
+          const errorText = await res.text();
+          console.error("Erreur API détaillée:", errorText); // Debug
+          
           if (res.status === 403) {
             throw new Error("Cette fonctionnalité est réservée aux particuliers");
           }
-          throw new Error(`Erreur HTTP: ${res.status}`);
+          if (res.status === 400) {
+            throw new Error("Requête invalide - Vérifiez vos informations de profil");
+          }
+          if (res.status === 401) {
+            throw new Error("Session expirée - Veuillez vous reconnecter");
+          }
+          throw new Error(`Erreur HTTP: ${res.status} - ${errorText}`);
         }
         return res.json();
       })
@@ -64,6 +97,8 @@ export default function MyDomainOffersPage() {
   }, []);
 
   const getDomaineIcon = (domaine: string) => {
+    if (!domaine) return "💼";
+    
     const icons: { [key: string]: string } = {
       informatique: "💻",
       développement: "💻",
@@ -82,6 +117,8 @@ export default function MyDomainOffersPage() {
   };
 
   const getContractColor = (typeContrat: string) => {
+    if (!typeContrat) return "from-gray-500 to-slate-500";
+    
     const colors: { [key: string]: string } = {
       CDI: "from-green-500 to-emerald-500",
       CDD: "from-blue-500 to-cyan-500",

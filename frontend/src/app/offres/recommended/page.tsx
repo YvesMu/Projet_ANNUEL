@@ -36,17 +36,62 @@ export default function RecommendedOffersPage() {
       return;
     }
 
+    // Décoder le token pour vérifier le rôle et le domaine
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log("🔍 Payload complet:", payload); // Debug détaillé
+      console.log("🎯 Domaine utilisateur:", payload.domaine); // Debug spécifique
+      console.log("👤 Rôle utilisateur:", payload.role); // Debug spécifique
+      
+      // Vérifier le rôle utilisateur
+      if (payload.role !== 'particulier') {
+        console.log("❌ Rôle incorrect:", payload.role, "- Attendu: particulier");
+        setError("Cette fonctionnalité est réservée aux utilisateurs particuliers. Les professionnels peuvent consulter toutes les offres via la section principale.");
+        setLoading(false);
+        return;
+      }
+      
+      // Vérifier si l'utilisateur a un domaine
+      if (!payload.domaine) {
+        console.log("❌ Aucun domaine trouvé dans le payload");
+        setError("Votre profil ne contient pas d'information sur votre domaine d'expertise. Veuillez compléter votre profil pour recevoir des recommandations personnalisées.");
+        setLoading(false);
+        return;
+      }
+      
+      console.log("✅ Validation réussie - Rôle:", payload.role, "- Domaine:", payload.domaine);
+    } catch (error) {
+      console.error("Erreur lors du décodage du token:", error);
+      setError("Session invalide - Veuillez vous reconnecter");
+      setLoading(false);
+      return;
+    }
+
+    console.log("Appel API vers:", `${process.env.NEXT_PUBLIC_API_URL}/offres/recommended`); // Debug
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/offres/recommended`, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     })
       .then(async (res) => {
+        console.log("Réponse API:", res.status, res.statusText); // Debug
+        
         if (!res.ok) {
+          const errorText = await res.text();
+          console.error("Erreur API détaillée:", errorText); // Debug
+          
           if (res.status === 403) {
             throw new Error("Cette fonctionnalité est réservée aux particuliers");
           }
-          throw new Error(`Erreur HTTP: ${res.status}`);
+          if (res.status === 400) {
+            throw new Error("Requête invalide - Vérifiez vos informations de profil");
+          }
+          if (res.status === 401) {
+            throw new Error("Session expirée - Veuillez vous reconnecter");
+          }
+          throw new Error(`Erreur HTTP: ${res.status} - ${errorText}`);
         }
         return res.json();
       })
@@ -62,6 +107,8 @@ export default function RecommendedOffersPage() {
   }, []);
 
   const getDomaineIcon = (domaine: string) => {
+    if (!domaine) return "💼";
+    
     const icons: { [key: string]: string } = {
       informatique: "💻",
       développement: "💻",
@@ -80,6 +127,8 @@ export default function RecommendedOffersPage() {
   };
 
   const getContractColor = (typeContrat: string) => {
+    if (!typeContrat) return "from-gray-500 to-slate-500";
+    
     const colors: { [key: string]: string } = {
       CDI: "from-green-500 to-emerald-500",
       CDD: "from-blue-500 to-cyan-500",

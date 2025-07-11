@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserService } from './user.service';
+import { AuthService } from '../auth/auth.service';
 import { Request } from 'express';
 import { CustomJwtPayload } from '../common/interfaces/custom-jwt-payload.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    private readonly authService: AuthService,
     private readonly config: ConfigService,
   ) {}
 
@@ -41,7 +43,20 @@ export class UserController {
   ) {
     const userId = req.user?.id;
     if (!userId) throw new Error('User ID is missing or invalid');
-    return this.userService.updateProfile(userId, update);
+    
+    const updatedUser = await this.userService.updateProfile(userId, update);
+    
+    // Si le domaine ou d'autres données importantes ont été mises à jour, 
+    // générer un nouveau token JWT
+    if (update.domaine || update.typeOffre) {
+      const newTokenData = await this.authService.generateNewToken(userId);
+      return {
+        user: updatedUser,
+        newToken: newTokenData.token
+      };
+    }
+    
+    return { user: updatedUser };
   }
 
   @UseGuards(JwtAuthGuard)
